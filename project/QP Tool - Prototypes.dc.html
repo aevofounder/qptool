@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Archivo+Expanded:wght@600;700;800;900&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:#E4E4E1;}
+  ::selection{background:#E30016;color:#fff;}
+  a{text-decoration:none; color:inherit;}
+</style>
+</helmet>
+
+<div style="min-height:100vh; background:#E4E4E1; font-family:'Manrope',sans-serif; color:#14110F; padding:64px 56px 80px;">
+  <div style="max-width:1280px; margin:0 auto;">
+
+    <!-- head -->
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:40px; flex-wrap:wrap; border-bottom:1px solid #C9C9C4; padding-bottom:32px; margin-bottom:48px;">
+      <div style="max-width:760px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#E30016; margin-bottom:18px;">QP&nbsp;Tool · Редизайн · Интерактивные прототипы</div>
+        <h1 style="font-family:'Archivo Expanded','Archivo',sans-serif; font-weight:800; font-size:52px; line-height:0.98; letter-spacing:-0.02em; margin:0 0 18px;">Три направления дизайна</h1>
+        <p style="font-size:16px; line-height:1.6; color:#54514C; margin:0; max-width:620px;">Каждое направление — отдельный кликабельный прототип с рабочей навигацией: главная → каталог → карточка товара, а также Решения, О&nbsp;компании и Контакты. Откройте любое, чтобы пройтись по экранам.</p>
+      </div>
+      <img src="assets/logo.svg" alt="QP Tool" style="height:36px; display:block;">
+    </div>
+
+    <!-- cards -->
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px;">
+
+      <!-- 1 -->
+      <a href="QP Tool 1 - Clean.dc.html" style="display:block; background:#FAFAF8; border:1px solid #D4D5D6; border-radius:10px; overflow:hidden; transition:transform .2s,box-shadow .2s;" style-hover="transform:translateY(-6px); box-shadow:0 24px 60px -32px rgba(20,17,15,0.45);">
+        <div style="aspect-ratio:4/3; background:#FAFAF8; border-bottom:1px solid #E2E1DD; position:relative; overflow:hidden; background-image:linear-gradient(#ECECE8 1px,transparent 1px),linear-gradient(90deg,#ECECE8 1px,transparent 1px); background-size:28px 28px;">
+          <div style="position:absolute; inset:0; padding:26px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div style="width:54px; height:8px; background:#14110F; border-radius:2px;"></div>
+            <div><div style="width:80%; height:14px; background:#14110F; border-radius:2px; margin-bottom:8px;"></div><div style="width:55%; height:14px; background:#14110F; border-radius:2px;"></div></div>
+            <div style="width:96px; height:26px; background:#E30016; border-radius:4px;"></div>
+          </div>
+        </div>
+        <div style="padding:24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;"><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#E30016;">01</span><span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.08em; color:#8A8782;">КОНСЕРВАТИВНЫЙ</span></div>
+          <h3 style="font-family:'Archivo',sans-serif; font-weight:700; font-size:22px; margin:0 0 10px;">Чистая сетка</h3>
+          <p style="font-size:14px; line-height:1.6; color:#6B6864; margin:0 0 18px;">Светлый, блупринт-сетка, аккуратная типографика. Ближе к текущей структуре, но свежее.</p>
+          <span style="font-family:'Manrope',sans-serif; font-size:14px; font-weight:600; color:#E30016;">Открыть прототип →</span>
+        </div>
+      </a>
+
+      <!-- 2 -->
+      <a href="QP Tool 2 - Contrast.dc.html" style="display:block; background:#FAFAF8; border:1px solid #D4D5D6; border-radius:10px; overflow:hidden; transition:transform .2s,box-shadow .2s;" style-hover="transform:translateY(-6px); box-shadow:0 24px 60px -32px rgba(20,17,15,0.45);">
+        <div style="aspect-ratio:4/3; background:#14110F; border-bottom:1px solid #E2E1DD; position:relative; overflow:hidden; background-image:linear-gradient(rgba(255,255,255,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.06) 1px,transparent 1px); background-size:28px 28px;">
+          <div style="position:absolute; inset:0; padding:26px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div style="width:54px; height:8px; background:#fff; border-radius:2px;"></div>
+            <div><div style="width:85%; height:16px; background:#fff; border-radius:2px; margin-bottom:8px;"></div><div style="width:60%; height:16px; background:#fff; border-radius:2px;"></div></div>
+            <div style="display:flex; gap:8px;"><div style="width:96px; height:26px; background:#E30016; border-radius:4px;"></div><div style="width:80px; height:26px; border:1px solid rgba(255,255,255,0.4); border-radius:4px;"></div></div>
+          </div>
+        </div>
+        <div style="padding:24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;"><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#E30016;">02</span><span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.08em; color:#8A8782;">СБАЛАНСИРОВАННЫЙ</span></div>
+          <h3 style="font-family:'Archivo',sans-serif; font-weight:700; font-size:22px; margin:0 0 10px;">Контраст</h3>
+          <p style="font-size:14px; line-height:1.6; color:#6B6864; margin:0 0 18px;">Премиальный тёмный hero, красная полоса статистики, крупная типографика.</p>
+          <span style="font-family:'Manrope',sans-serif; font-size:14px; font-weight:600; color:#E30016;">Открыть прототип →</span>
+        </div>
+      </a>
+
+      <!-- 3 -->
+      <a href="QP Tool 3 - Poster.dc.html" style="display:block; background:#100E0D; border:1px solid #2A2724; border-radius:10px; overflow:hidden; transition:transform .2s,box-shadow .2s;" style-hover="transform:translateY(-6px); box-shadow:0 24px 60px -32px rgba(20,17,15,0.6);">
+        <div style="aspect-ratio:4/3; background:#100E0D; border-bottom:1px solid #2A2724; position:relative; overflow:hidden;">
+          <div style="position:absolute; inset:0; padding:24px; display:flex; flex-direction:column; justify-content:center;">
+            <div style="font-family:'Archivo Expanded','Archivo',sans-serif; font-weight:900; font-size:34px; line-height:0.9; letter-spacing:-0.03em; color:#F4F3F0; text-transform:uppercase;">Режущий<br>инстру<span style="color:#E30016;">мент</span></div>
+          </div>
+          <div style="position:absolute; top:0; right:0; width:34px; height:34px; background:#E30016;"></div>
+        </div>
+        <div style="padding:24px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;"><span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#E30016;">03</span><span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.08em; color:#9A9793;">СМЕЛЫЙ</span></div>
+          <h3 style="font-family:'Archivo',sans-serif; font-weight:700; font-size:22px; margin:0 0 10px; color:#F4F3F0;">Индустриальный плакат</h3>
+          <p style="font-size:14px; line-height:1.6; color:#9A9793; margin:0 0 18px;">Полностью тёмный, гигантская типографика, бегущая строка, плотный каталог.</p>
+          <span style="font-family:'Manrope',sans-serif; font-size:14px; font-weight:600; color:#E30016;">Открыть прототип →</span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- footer link to comparison -->
+    <div style="margin-top:32px; border-top:1px solid #C9C9C4; padding-top:24px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; align-items:center;">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:#8A8782;">СРАВНЕНИЕ ГЛАВНЫХ СТРАНИЦ РЯДОМ</span>
+      <a href="QP Tool Redesign.dc.html" style="font-family:'Manrope',sans-serif; font-size:14px; font-weight:600; color:#14110F; border:1px solid #C9C9C4; padding:11px 22px; border-radius:4px; transition:all .2s;" style-hover="border-color:#14110F;">Открыть страницу сравнения →</a>
+    </div>
+
+  </div>
+</div>
+
+</x-dc>
+</body>
+</html>
