@@ -25,13 +25,21 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 class BrandViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = BrandSerializer
     lookup_field = "slug"
-    queryset = Brand.objects.all()
+    # Only brands that actually have published products, with a live count
+    # for the catalog's producer facet.
+    queryset = (
+        Brand.objects.annotate(
+            product_count=Count("products", filter=Q(products__is_active=True))
+        )
+        .filter(product_count__gt=0)
+        .order_by("name")
+    )
 
 
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = "slug"
     filterset_fields = ["category__slug", "brand__slug", "availability", "is_featured"]
-    search_fields = ["code", "name", "description", "material"]
+    search_fields = ["code", "name", "description", "material", "brand__name"]
     ordering_fields = ["created_at", "name", "code"]
 
     def get_queryset(self):

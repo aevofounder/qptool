@@ -4,9 +4,13 @@ from .models import Brand, Category, Product, ProductImage, ProductSpec
 
 
 class BrandSerializer(serializers.ModelSerializer):
+    # Present when the queryset annotates it (catalog producer facet); the
+    # default keeps the detail-page brand block working without the annotation.
+    product_count = serializers.IntegerField(read_only=True, default=0)
+
     class Meta:
         model = Brand
-        fields = ["id", "name", "slug"]
+        fields = ["id", "name", "slug", "product_count"]
 
 
 class CategorySerializer(serializers.ModelSerializer):

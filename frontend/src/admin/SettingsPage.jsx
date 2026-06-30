@@ -11,45 +11,20 @@ const FIELDS = [
 
 export default function SettingsPage() {
   const [form, setForm] = useState(null);
-  const [load, setLoad] = useState({ state: "loading", error: null });
   const [status, setStatus] = useState({ state: "idle", error: null });
 
   useEffect(() => {
     api
       .settings()
-      .then((d) => {
-        setForm(d);
-        setLoad({ state: "ok", error: null });
-      })
-      .catch((err) => {
-        setLoad({
-          state: "error",
-          error:
-            err?.status >= 500
-              ? "Сервер вернул ошибку. Скорее всего, не применена миграция базы — выполните в папке backend: python manage.py migrate, затем перезапустите сервер."
-              : "Не удалось загрузить настройки. Проверьте, что бэкенд запущен.",
-        });
-      });
+      .then((d) => setForm(d))
+      .catch(() => setStatus({ state: "error", error: "Не удалось загрузить настройки." }));
   }, []);
 
-  if (load.state === "loading") {
+  if (!form) {
     return (
       <div>
         <h1 className="admin__h1">Контакты и карта</h1>
         <div className="loading">ЗАГРУЗКА…</div>
-      </div>
-    );
-  }
-
-  if (load.state === "error") {
-    return (
-      <div>
-        <h1 className="admin__h1">Контакты и карта</h1>
-        <div className="admin__card">
-          <div className="iu__err" style={{ marginTop: 0 }}>
-            {load.error}
-          </div>
-        </div>
       </div>
     );
   }

@@ -190,13 +190,21 @@ img {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 16px var(--pad-x);
+  padding: 18px var(--pad-x);
   border-bottom: 1px solid var(--line);
 }
 .header__logo {
-  height: 30px;
+  height: 46px;
   flex-shrink: 0;
   cursor: pointer;
+  display: block;
+}
+.header__logo-btn {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.header__logo-btn:hover {
+  transform: scale(1.04);
+  opacity: 0.9;
 }
 .header__nav {
   display: flex;
@@ -235,9 +243,10 @@ img {
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 .footer__logo {
-  height: 30px;
+  height: 40px;
   margin-bottom: 20px;
   cursor: pointer;
+  display: block;
 }
 .footer__addr {
   font-size: 13.5px;
@@ -319,7 +328,7 @@ img {
   line-height: 1;
   letter-spacing: -0.02em;
   margin: 0 0 24px;
-  min-height: 160px;
+  min-height: 116px;
 }
 .hero__lead {
   font-size: 17px;
@@ -761,19 +770,27 @@ img {
   font-size: 14px;
   color: var(--text);
   cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  font-family: var(--sans);
+  transition: color 0.2s;
+}
+.check:hover {
+  color: var(--ink);
 }
 .check__box {
   width: 16px;
   height: 16px;
   border: 1px solid var(--line-2);
   border-radius: 3px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  position: relative;
   transition: background 0.15s, border-color 0.15s;
-}
-.check:hover .check__box {
-  border-color: var(--ink);
 }
 .check__box.is-checked {
   background: var(--red);
@@ -781,17 +798,11 @@ img {
 }
 .check__box.is-checked::after {
   content: "";
-  position: absolute;
-  left: 4px;
-  top: 1px;
-  width: 4px;
-  height: 8px;
-  border: solid #fff;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-}
-.check {
-  user-select: none;
+  width: 8px;
+  height: 4px;
+  border-left: 1.5px solid #fff;
+  border-bottom: 1.5px solid #fff;
+  transform: translateY(-1px) rotate(-45deg);
 }
 .filters__reset {
   font-family: var(--mono);
@@ -1648,4 +1659,313 @@ img {
   .hero-page__title {
     font-size: 34px;
   }
+}
+
+/* ========================================================================
+   ACCESSIBILITY — visible keyboard focus + reduced motion
+   ===================================================================== */
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+/* don't show the ring on mouse click, only keyboard */
+:where(a, button):focus:not(:focus-visible) {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  .hero__ind {
+    transition: none;
+  }
+  .pcard:hover,
+  .article:hover,
+  .rcard:hover,
+  .cat-card:hover {
+    transform: none;
+  }
+}
+
+/* ========================================================================
+   SHARED — breadcrumb wrapper + button-as-link resets
+   ===================================================================== */
+.crumb-wrap {
+  padding: 36px var(--pad-x) 0;
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+.crumb__link {
+  font-family: var(--mono);
+  font-size: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.crumb__link:hover {
+  color: var(--red);
+}
+
+/* ========================================================================
+   HEADER — actions, specification button, clickable contacts
+   ===================================================================== */
+.header__util-right a {
+  color: var(--text);
+  transition: color 0.2s;
+}
+.header__util-right a:hover {
+  color: var(--red);
+}
+.header__logo-btn,
+.footer__logo-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+}
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.header__spec {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  padding: 8px 6px;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  transition: color 0.2s;
+}
+.header__spec:hover {
+  color: var(--red);
+}
+.header__spec svg {
+  display: block;
+}
+.header__spec-badge {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--red);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ========================================================================
+   FOOTER — links as buttons
+   ===================================================================== */
+.footer__links button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: #c9c9c4;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.footer__links a {
+  color: #c9c9c4;
+  transition: color 0.2s;
+}
+.footer__links button:hover,
+.footer__links a:hover {
+  color: #fff;
+}
+.footer__manage {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.footer__manage:hover {
+  color: #fff;
+}
+
+/* ========================================================================
+   CATALOG — search box, brand filter, "add to spec" button
+   ===================================================================== */
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  max-width: 520px;
+}
+.search__icon {
+  position: absolute;
+  left: 14px;
+  color: var(--muted);
+  pointer-events: none;
+}
+.search__input {
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 15px;
+  padding: 13px 40px 13px 40px;
+  border: 1px solid var(--line-2);
+  border-radius: 5px;
+  background: var(--bg);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search__input::placeholder {
+  color: var(--muted-2);
+}
+.search__input:focus {
+  border-color: var(--red);
+}
+.search__clear {
+  position: absolute;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.search__clear:hover {
+  color: var(--red);
+}
+.pcard__add {
+  margin-top: 14px;
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pcard__add:hover {
+  border-color: var(--ink);
+}
+.pcard__add.is-in {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+/* ========================================================================
+   CONTACTS — specification (inquiry) panel inside the form
+   ===================================================================== */
+.spec {
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  padding: 18px;
+  margin-bottom: 22px;
+  background: var(--bg);
+}
+.spec__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.spec__h {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+.spec__clear {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--red);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.spec__list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.spec__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid #EDEDE9;
+}
+.spec__item:last-child {
+  border-bottom: none;
+}
+.spec__code {
+  font-size: 11px;
+  color: var(--red);
+  flex-shrink: 0;
+}
+.spec__name {
+  font-size: 13.5px;
+  color: var(--text);
+  flex: 1;
+  line-height: 1.35;
+}
+.spec__remove {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.spec__remove:hover {
+  color: var(--red);
+}
+.spec__note {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
 }

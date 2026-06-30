@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { api } from "../lib/api.js";
 import { useSettings } from "../lib/hooks.jsx";
+import { useInquiry } from "../lib/inquiry.jsx";
+import { useSeo } from "../lib/seo.jsx";
+import { telHref } from "../components/Header.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 
 const EMPTY = { name: "", phone: "", email: "", message: "" };
@@ -18,18 +21,36 @@ function mapEmbedSrc(value) {
 
 export default function Contacts() {
   const settings = useSettings();
+  const inquiry = useInquiry();
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState({ state: "idle", error: null });
+
+  useSeo({
+    title: "Контакты",
+    description:
+      "Контакты QP Tool в Екатеринбурге: телефоны, почта, адрес, график работы и форма заявки на подбор инструмента.",
+  });
 
   const update = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
   const submit = async (e) => {
     e.preventDefault();
     setStatus({ state: "sending", error: null });
+    // Append the inquiry list (спецификация) to the lead message.
+    const specText = inquiry.items.length
+      ? "\n\nСпецификация (" + inquiry.items.length + "):\n" +
+        inquiry.items.map((i) => `• ${i.code} — ${i.name}`).join("\n")
+      : "";
     try {
-      await api.createLead({ ...form, source: "contact_form", consent: true });
+      await api.createLead({
+        ...form,
+        message: (form.message || "") + specText,
+        source: inquiry.items.length ? "inquiry_spec" : "contact_form",
+        consent: true,
+      });
       setStatus({ state: "sent", error: null });
       setForm(EMPTY);
+      inquiry.clear();
     } catch (err) {
       const msg =
         (err.detail && (err.detail.detail || JSON.stringify(err.detail))) ||
@@ -43,7 +64,7 @@ export default function Contacts() {
 
   return (
     <div>
-      <div style={{ padding: "36px 56px 0", maxWidth: 1440, margin: "0 auto" }}>
+      <div className="crumb-wrap">
         <Breadcrumb items={[{ label: "ГЛАВНАЯ", to: "/" }, { label: "КОНТАКТЫ" }]} />
       </div>
 
@@ -56,18 +77,18 @@ export default function Contacts() {
               <div>
                 <div className="cinfo__label">ТЕЛЕФОНЫ</div>
                 <div className="cinfo__value">
-                  {settings.phone_primary}
+                  <a href={telHref(settings.phone_primary)}>{settings.phone_primary}</a>
                   {settings.phone_secondary && (
                     <>
                       <br />
-                      {settings.phone_secondary}
+                      <a href={telHref(settings.phone_secondary)}>{settings.phone_secondary}</a>
                     </>
                   )}
                 </div>
               </div>
               <div>
                 <div className="cinfo__label">ПОЧТА</div>
-                <div className="cinfo__value">{settings.email}</div>
+                <div className="cinfo__value"><a href={`mailto:${settings.email}`}>{settings.email}</a></div>
               </div>
               <div>
                 <div className="cinfo__label">АДРЕС</div>
@@ -106,6 +127,35 @@ export default function Contacts() {
             <p className="form__lead">
               Перезвоним в течение рабочего дня и поможем подобрать инструмент.
             </p>
+
+            {inquiry.count > 0 && (
+              <div className="spec">
+                <div className="spec__head">
+                  <span className="spec__h">Спецификация · {inquiry.count}</span>
+                  <button type="button" className="spec__clear" onClick={inquiry.clear}>
+                    Очистить
+                  </button>
+                </div>
+                <ul className="spec__list">
+                  {inquiry.items.map((it) => (
+                    <li className="spec__item" key={it.code}>
+                      <span className="spec__code mono">{it.code}</span>
+                      <span className="spec__name">{it.name}</span>
+                      <button
+                        type="button"
+                        className="spec__remove"
+                        aria-label={`Убрать ${it.code} из спецификации`}
+                        onClick={() => inquiry.remove(it.code)}
+                      >
+                        ✕
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <p className="spec__note">Список позиций отправится вместе с заявкой.</p>
+              </div>
+            )}
+
             <form className="form__fields" onSubmit={submit}>
               <input placeholder="Ваше имя" value={form.name} onChange={update("name")} required />
               <input placeholder="Телефон" value={form.phone} onChange={update("phone")} required />

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useSettings } from "../lib/hooks.jsx";
+import { telHref } from "./Header.jsx";
 
 export default function Footer() {
   const settings = useSettings();
@@ -10,29 +11,33 @@ export default function Footer() {
       <div className="footer__inner">
         <div className="footer__grid">
           <div>
-            <img
-              className="footer__logo"
-              src="/assets/logo-light.svg"
-              alt="QP Tool"
+            <button
+              type="button"
+              className="footer__logo-btn"
+              aria-label="QP Tool — на главную"
               onClick={() => navigate("/")}
-            />
+            >
+              <img className="footer__logo" src="/assets/logo-light.svg" alt="QP Tool" />
+            </button>
             <p className="footer__addr">{settings.address}</p>
           </div>
           <div>
             <div className="footer__h">КОМПАНИЯ</div>
-            <div className="footer__links">
-              <span onClick={() => navigate("/catalog")}>Продукция</span>
-              <span onClick={() => navigate("/solutions")}>Решения</span>
-              <span onClick={() => navigate("/about")}>О компании</span>
-              <span onClick={() => navigate("/contacts")}>Контакты</span>
-            </div>
+            <nav className="footer__links">
+              <button type="button" onClick={() => navigate("/catalog")}>Продукция</button>
+              <button type="button" onClick={() => navigate("/solutions")}>Решения</button>
+              <button type="button" onClick={() => navigate("/about")}>О компании</button>
+              <button type="button" onClick={() => navigate("/contacts")}>Контакты</button>
+            </nav>
           </div>
           <div>
             <div className="footer__h">КОНТАКТЫ</div>
             <div className="footer__links">
-              <span>{settings.phone_primary}</span>
-              {settings.phone_secondary && <span>{settings.phone_secondary}</span>}
-              <span>{settings.email}</span>
+              <a href={telHref(settings.phone_primary)}>{settings.phone_primary}</a>
+              {settings.phone_secondary && (
+                <a href={telHref(settings.phone_secondary)}>{settings.phone_secondary}</a>
+              )}
+              <a href={`mailto:${settings.email}`}>{settings.email}</a>
             </div>
           </div>
           <div>
@@ -51,13 +56,13 @@ export default function Footer() {
         </div>
         <div className="footer__copy">
           © 2009 {settings.company_name} · Все права защищены
-          <span
+          <button
+            type="button"
             className="footer__manage"
             onClick={() => navigate("/manage")}
-            style={{ cursor: "pointer", marginLeft: 16 }}
           >
             Управление
-          </span>
+          </button>
         </div>
       </div>
     </footer>

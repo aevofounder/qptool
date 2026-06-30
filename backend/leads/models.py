@@ -9,6 +9,7 @@ class Lead(models.Model):
         CONSULTATION = "consultation", "Заказать консультацию"
         PRODUCT = "product", "Запрос цены (карточка товара)"
         SOLUTION = "solution", "Обсудить проект (решения)"
+        INQUIRY_SPEC = "inquiry_spec", "Спецификация (запрос цены)"
         OTHER = "other", "Другое"
 
     class Status(models.TextChoices):

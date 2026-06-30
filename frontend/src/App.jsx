@@ -3,6 +3,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
 import { SettingsProvider } from "./lib/hooks.jsx";
+import { InquiryProvider } from "./lib/inquiry.jsx";
 import { AuthProvider } from "./lib/auth.jsx";
 import Home from "./pages/Home.jsx";
 import Catalog from "./pages/Catalog.jsx";
@@ -35,6 +36,7 @@ export default function App() {
 
   return (
     <SettingsProvider>
+      <InquiryProvider>
       <div className="app">
         <ScrollToTop />
         <Header />
@@ -50,6 +52,7 @@ export default function App() {
         </Routes>
         <Footer />
       </div>
+      </InquiryProvider>
     </SettingsProvider>
   );
 }

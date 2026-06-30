@@ -1,11 +1,14 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { useFetch } from "../lib/hooks.jsx";
+import { useInquiry } from "../lib/inquiry.jsx";
+import { useSeo } from "../lib/seo.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 
 export default function Product() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const inquiry = useInquiry();
 
   const { data: product, loading, error } = useFetch(
     () => api.product(slug),
@@ -20,6 +23,36 @@ export default function Product() {
     [catSlug],
     { results: [] }
   );
+
+  // SEO — called unconditionally (before early returns) per rules of hooks.
+  useSeo({
+    title: product ? `${product.name} · ${product.code}` : "Товар",
+    description: product
+      ? `${product.name} (${product.code})${product.brand?.name ? ", " + product.brand.name : ""}. ${product.description || "Металлорежущий инструмент от QP Tool — цена по запросу."}`.slice(0, 300)
+      : "Металлорежущий инструмент от QP Tool.",
+    type: "product",
+    noindex: !product,
+    jsonLd: product
+      ? {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          sku: product.code,
+          ...(product.brand?.name ? { brand: { "@type": "Brand", name: product.brand.name } } : {}),
+          ...(product.material ? { material: product.material } : {}),
+          ...(product.description ? { description: product.description } : {}),
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "RUB",
+            availability:
+              product.availability === "in_stock"
+                ? "https://schema.org/InStock"
+                : "https://schema.org/PreOrder",
+            seller: { "@type": "Organization", name: "QP Tool" },
+          },
+        }
+      : null,
+  });
 
   if (loading) return <div className="loading">ЗАГРУЗКА…</div>;
   if (error || !product)
@@ -38,10 +71,11 @@ export default function Product() {
 
   const inStock = product.availability === "in_stock";
   const hasImages = product.images && product.images.length > 0;
+  const inList = inquiry.has(product.code);
 
   return (
     <div>
-      <div style={{ padding: "36px 56px 0", maxWidth: 1440, margin: "0 auto" }}>
+      <div className="crumb-wrap">
         <Breadcrumb
           items={[
             { label: "ГЛАВНАЯ", to: "/" },
@@ -118,11 +152,16 @@ export default function Product() {
               <div className="buy__label">Стоимость</div>
               <div className="buy__price">По запросу</div>
             </div>
-            <button className="btn btn-red" onClick={() => navigate("/contacts")}>
-              Запросить цену
+            <button
+              type="button"
+              className={`btn ${inList ? "btn-outline-red" : "btn-red"}`}
+              aria-pressed={inList}
+              onClick={() => inquiry.toggle({ code: product.code, name: product.name, slug: product.slug })}
+            >
+              {inList ? "✓ В спецификации" : "+ В спецификацию"}
             </button>
-            <button className="btn btn-outline" onClick={() => navigate("/catalog")}>
-              ← В каталог
+            <button className="btn btn-outline" onClick={() => navigate("/contacts")}>
+              Запросить цену
             </button>
           </div>
         </div>

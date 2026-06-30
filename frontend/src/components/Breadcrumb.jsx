@@ -11,7 +11,9 @@ export default function Breadcrumb({ items }) {
       {items.map((item, i) => (
         <span key={i}>
           {item.to ? (
-            <a onClick={() => navigate(item.to)}>{item.label}</a>
+            <button type="button" className="crumb__link" onClick={() => navigate(item.to)}>
+              {item.label}
+            </button>
           ) : (
             <span className="cur">{item.label}</span>
           )}

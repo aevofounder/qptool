@@ -64,6 +64,20 @@ npm run build        # → dist/
 npm run preview      # serve the production build locally
 ```
 
+### Prerendering (SEO)
+
+`npm run build` ships a normal SPA. For static, crawlable HTML per marketing
+route, opt in to prerendering (install the two optional packages first):
+
+```bash
+npm i -D @prerenderer/rollup-plugin @prerenderer/renderer-puppeteer
+npm run build:prerender   # PRERENDER=1 vite build → static /, /catalog, /about, …
+```
+
+Per-route `<title>`, meta description, Open Graph and JSON-LD are set at runtime
+via `src/lib/seo.jsx` (`useSeo`), so even the plain SPA build gets correct tags
+once JS runs; prerendering bakes them into the served HTML for crawlers.
+
 For production, set `VITE_API_BASE` to the API origin (e.g. `https://api.qptool.ru/api`)
 in `.env` before building — see `.env.example`.
 

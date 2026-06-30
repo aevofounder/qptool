@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { useFetch } from "../lib/hooks.jsx";
+import { useSeo } from "../lib/seo.jsx";
 import {
   FALLBACK_ADVANTAGES,
   FALLBACK_ARTICLES,
@@ -44,6 +45,32 @@ function formatArticleMeta(a) {
 
 export default function Home() {
   const navigate = useNavigate();
+
+  useSeo({
+    title: null, // home uses the full brand title
+    description:
+      "QP Tool — официальный поставщик металлорежущего инструмента и оснащения станков в Екатеринбурге с 2009 года. Фрезы, свёрла, токарные пластины, метчики и резцы со склада и под заказ.",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "ООО «КуПиТул» (QP Tool)",
+      url: typeof window !== "undefined" ? window.location.origin : "",
+      foundingDate: "2009",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Екатеринбург",
+        addressCountry: "RU",
+        streetAddress: "ул. Московская, д. 195, офис 1026, 1037",
+        postalCode: "620144",
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+7-343-302-00-96",
+        contactType: "sales",
+        email: "info@qptool.ru",
+      },
+    },
+  });
   const { data: heroSlides } = useFetch(api.heroSlides, [], FALLBACK_HERO);
   const { data: advantages } = useFetch(api.advantages, [], FALLBACK_ADVANTAGES);
   const { data: articles } = useFetch(api.articles, [], FALLBACK_ARTICLES);
@@ -51,14 +78,23 @@ export default function Home() {
 
   const slides = heroSlides?.length ? heroSlides : FALLBACK_HERO;
   const [idx, setIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
   const active = idx % slides.length;
   const s = slides[active];
 
-  // auto-rotate every 5s
+  // Respect the user's reduced-motion preference — no auto-rotation then.
+  const reducedMotion = useRef(false);
   useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    reducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
+
+  // auto-rotate every 5s, paused on hover/focus or when motion is reduced
+  useEffect(() => {
+    if (paused || reducedMotion.current) return;
     const t = setInterval(() => setIdx((i) => (i + 1) % slides.length), 5000);
     return () => clearInterval(t);
-  }, [slides.length]);
+  }, [slides.length, paused]);
 
   const tabLabel = (slide, i) =>
     slides.length === HERO_TABS.length ? HERO_TABS[i] : slide.tag;
@@ -69,7 +105,13 @@ export default function Home() {
   return (
     <div>
       {/* ---- hero ---- */}
-      <section className="hero">
+      <section
+        className="hero"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocusCapture={() => setPaused(true)}
+        onBlurCapture={() => setPaused(false)}
+      >
         <div className="hero__inner">
           <div>
             <div className="hero__eyebrow">

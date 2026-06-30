@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useSeo } from "../lib/seo.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 
 const VALUES = [
@@ -18,9 +19,14 @@ const INDUSTRIES = ["Машиностроение", "Металлообрабо�
 
 export default function Solution() {
   const navigate = useNavigate();
+  useSeo({
+    title: "Решения — оснащение станков под ключ",
+    description:
+      "Комплексное оснащение станков от QP Tool: подбор по ТЗ, поставка и сопровождение режущего инструмента. Снижение затрат до 20%.",
+  });
   return (
     <div>
-      <div style={{ padding: "36px 56px 0", maxWidth: 1440, margin: "0 auto" }}>
+      <div className="crumb-wrap">
         <Breadcrumb items={[{ label: "ГЛАВНАЯ", to: "/" }, { label: "РЕШЕНИЯ" }]} />
       </div>
 

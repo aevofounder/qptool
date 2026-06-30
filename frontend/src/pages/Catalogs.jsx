@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { api } from "../lib/api.js";
 import { useFetch } from "../lib/hooks.jsx";
+import { useSeo } from "../lib/seo.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 
 export default function Catalogs() {
   const { data: catalogs, loading } = useFetch(api.catalogs, [], []);
   const [viewing, setViewing] = useState(null); // catalog being previewed
+
+  useSeo({
+    title: "Каталоги и прайсы",
+    description:
+      "PDF-каталоги и прайс-листы QP Tool: просмотр в браузере и скачивание каталогов металлорежущего инструмента и оснастки.",
+  });
 
   const list = catalogs || [];
 

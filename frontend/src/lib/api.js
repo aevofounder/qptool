@@ -40,14 +40,19 @@ export const api = {
   // ---- public reads ----
   settings: () => request("/settings/"),
   categories: () => request("/categories/").then(results),
+  brands: () => request("/brands/").then(results),
   products: (params = {}) => {
-    const sp = new URLSearchParams();
-    Object.entries(params).forEach(([k, v]) => {
-      if (Array.isArray(v)) v.forEach((item) => sp.append(k, item));
-      else if (v !== undefined && v !== null && v !== "") sp.append(k, v);
+    // Build the query string by hand so array values (e.g. material=[…])
+    // expand into repeated keys the DRF backend expects, and empty values
+    // are dropped.
+    const qs = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+      if (value == null || value === "") return;
+      if (Array.isArray(value)) value.forEach((v) => v != null && v !== "" && qs.append(key, v));
+      else qs.append(key, value);
     });
-    const qs = sp.toString();
-    return request(`/products/${qs ? `?${qs}` : ""}`);
+    const s = qs.toString();
+    return request(`/products/${s ? `?${s}` : ""}`);
   },
   product: (slug) => request(`/products/${encodeURIComponent(slug)}/`),
   articles: () => request("/articles/").then(results),

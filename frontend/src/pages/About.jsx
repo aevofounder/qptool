@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useSeo } from "../lib/seo.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 
 const NUMBERS = [
@@ -17,9 +18,14 @@ const PRINCIPLES = [
 
 export default function About() {
   const navigate = useNavigate();
+  useSeo({
+    title: "О компании",
+    description:
+      "QP Tool — поставщик металлорежущего инструмента из Екатеринбурга с 2009 года. 15 лет опыта, 2500+ позиций, 300+ предприятий-клиентов.",
+  });
   return (
     <div>
-      <div style={{ padding: "36px 56px 0", maxWidth: 1440, margin: "0 auto" }}>
+      <div className="crumb-wrap">
         <Breadcrumb items={[{ label: "ГЛАВНАЯ", to: "/" }, { label: "О КОМПАНИИ" }]} />
       </div>
 
