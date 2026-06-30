@@ -51,7 +51,7 @@ export default function Header() {
           <button
             type="button"
             className="header__spec"
-            onClick={() => navigate("/contacts")}
+            onClick={() => navigate("/specification")}
             aria-label={`Спецификация: ${inquiry.count} позиций`}
           >
             <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">

@@ -12,6 +12,7 @@ import Product from "./pages/Product.jsx";
 import Solution from "./pages/Solution.jsx";
 import About from "./pages/About.jsx";
 import Contacts from "./pages/Contacts.jsx";
+import Specification from "./pages/Specification.jsx";
 import AdminApp from "./admin/AdminApp.jsx";
 
 function ScrollToTop() {
@@ -48,6 +49,7 @@ export default function App() {
           <Route path="/solutions" element={<Solution />} />
           <Route path="/about" element={<About />} />
           <Route path="/contacts" element={<Contacts />} />
+          <Route path="/specification" element={<Specification />} />
           <Route path="*" element={<Home />} />
         </Routes>
         <Footer />

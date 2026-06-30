@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { useFetch } from "../lib/hooks.jsx";
@@ -9,12 +10,18 @@ export default function Product() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const inquiry = useInquiry();
+  const [active, setActive] = useState(0);
 
   const { data: product, loading, error } = useFetch(
     () => api.product(slug),
     [slug],
     null
   );
+
+  // Reset the selected gallery image when navigating between products.
+  useEffect(() => {
+    setActive(0);
+  }, [slug]);
 
   // Related: other items in the same category, then top up from the rest.
   const catSlug = product?.category?.slug;
@@ -70,7 +77,9 @@ export default function Product() {
     .slice(0, 4);
 
   const inStock = product.availability === "in_stock";
-  const hasImages = product.images && product.images.length > 0;
+  const images = product.images || [];
+  const hasImages = images.length > 0;
+  const activeIdx = Math.min(active, Math.max(0, images.length - 1));
   const inList = inquiry.has(product.code);
 
   return (
@@ -92,8 +101,8 @@ export default function Product() {
             <div className="ph-label">ФОТО · {product.code}</div>
             {hasImages ? (
               <img
-                src={product.images[0].image}
-                alt={product.name}
+                src={images[activeIdx].image}
+                alt={images[activeIdx].alt || product.name}
                 style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }}
               />
             ) : (
@@ -102,14 +111,22 @@ export default function Product() {
               </div>
             )}
           </div>
-          <div className="gallery__thumbs">
-            {[0, 1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className={`gallery__thumb hatch-soft${i === 0 ? " is-active" : ""}`}
-              />
-            ))}
-          </div>
+          {hasImages && images.length > 1 && (
+            <div className="gallery__thumbs">
+              {images.map((img, i) => (
+                <button
+                  type="button"
+                  key={img.id ?? i}
+                  className={`gallery__thumb${i === activeIdx ? " is-active" : ""}`}
+                  aria-label={`Фото ${i + 1}`}
+                  aria-pressed={i === activeIdx}
+                  onClick={() => setActive(i)}
+                >
+                  <img src={img.image} alt={img.alt || `${product.name} — фото ${i + 1}`} />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* info */}

@@ -38,6 +38,8 @@ export default defineConfig(async () => {
     plugins,
     server: {
       port: 5173,
+      host: true,
+      allowedHosts: true,
       proxy: {
         "/api": { target: API_TARGET, changeOrigin: true },
         "/media": { target: API_TARGET, changeOrigin: true },

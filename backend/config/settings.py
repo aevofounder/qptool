@@ -180,6 +180,11 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.MultiPartParser",
         "rest_framework.parsers.FormParser",
     ],
+    # Rate limits — the public lead endpoint is the only anonymous write path,
+    # so cap how often a single client can submit to blunt spam/abuse.
+    "DEFAULT_THROTTLE_RATES": {
+        "leads": os.environ.get("DJANGO_LEADS_THROTTLE", "20/hour"),
+    },
 }
 
 

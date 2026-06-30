@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { useSettings } from "../lib/hooks.jsx";
-import { useInquiry } from "../lib/inquiry.jsx";
+import { useInquiry, buildInquiryMessage } from "../lib/inquiry.jsx";
 import { useSeo } from "../lib/seo.jsx";
 import { telHref } from "../components/Header.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";
@@ -22,6 +23,7 @@ function mapEmbedSrc(value) {
 export default function Contacts() {
   const settings = useSettings();
   const inquiry = useInquiry();
+  const navigate = useNavigate();
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState({ state: "idle", error: null });
 
@@ -36,15 +38,15 @@ export default function Contacts() {
   const submit = async (e) => {
     e.preventDefault();
     setStatus({ state: "sending", error: null });
-    // Append the inquiry list (спецификация) to the lead message.
-    const specText = inquiry.items.length
-      ? "\n\nСпецификация (" + inquiry.items.length + "):\n" +
-        inquiry.items.map((i) => `• ${i.code} — ${i.name}`).join("\n")
-      : "";
+    // Compose the message: the inquiry list (спецификация) as tidy paragraphs,
+    // with the typed comment treated as the buyer's note.
+    const message = inquiry.items.length
+      ? buildInquiryMessage(inquiry.items, form.message)
+      : form.message || "";
     try {
       await api.createLead({
         ...form,
-        message: (form.message || "") + specText,
+        message,
         source: inquiry.items.length ? "inquiry_spec" : "contact_form",
         consent: true,
       });
@@ -141,6 +143,7 @@ export default function Contacts() {
                     <li className="spec__item" key={it.code}>
                       <span className="spec__code mono">{it.code}</span>
                       <span className="spec__name">{it.name}</span>
+                      <span className="spec__qty">{it.qty} шт.</span>
                       <button
                         type="button"
                         className="spec__remove"
@@ -153,6 +156,13 @@ export default function Contacts() {
                   ))}
                 </ul>
                 <p className="spec__note">Список позиций отправится вместе с заявкой.</p>
+                <button
+                  type="button"
+                  className="spec__link"
+                  onClick={() => navigate("/specification")}
+                >
+                  Открыть полную спецификацию →
+                </button>
               </div>
             )}
 
