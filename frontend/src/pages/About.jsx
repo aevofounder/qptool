@@ -4,7 +4,7 @@ import Breadcrumb from "../components/Breadcrumb.jsx";
 
 const NUMBERS = [
   { value: "2009", red: false, label: "ГОД ОСНОВАНИЯ" },
-  { value: "15 лет", red: true, label: "НА РЫНКЕ" },
+  { value: "15", red: true, label: "ЛЕТ НА РЫНКЕ" },
   { value: "2500+", red: false, label: "ПОЗИЦИЙ В КАТАЛОГЕ" },
   { value: "300+", red: false, label: "ПРЕДПРИЯТИЙ-КЛИЕНТОВ" },
 ];

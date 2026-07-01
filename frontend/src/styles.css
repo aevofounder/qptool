@@ -21,8 +21,8 @@
 
   --mono: "JetBrains Mono", monospace;
   --sans: "Manrope", sans-serif;
-  --display: "Archivo Expanded", "Archivo", sans-serif;
-  --display-2: "Archivo", sans-serif;
+  --display: "Montserrat", sans-serif;
+  --display-2: "Montserrat", sans-serif;
 
   --maxw: 1440px;
   --maxw-narrow: 1328px;
@@ -53,6 +53,7 @@ a {
 }
 img {
   display: block;
+  max-width: 100%;
 }
 
 /* ---- shared primitives --------------------------------------------- */
@@ -61,6 +62,7 @@ img {
 }
 .app {
   min-height: 100vh;
+  min-height: 100svh;
 }
 
 .btn {
@@ -324,8 +326,8 @@ img {
 .hero__title {
   font-family: var(--display);
   font-weight: 800;
-  font-size: 54px;
-  line-height: 1;
+  font-size: clamp(1.55rem, 7.5vw, 54px);
+  line-height: 1.02;
   letter-spacing: -0.02em;
   margin: 0 0 24px;
   min-height: 116px;
@@ -439,7 +441,7 @@ img {
 .h2 {
   font-family: var(--display);
   font-weight: 700;
-  font-size: 34px;
+  font-size: clamp(1.5rem, 4.5vw, 34px);
   letter-spacing: -0.02em;
   margin: 0;
 }
@@ -552,7 +554,7 @@ img {
 .cta__title {
   font-family: var(--display);
   font-weight: 800;
-  font-size: 36px;
+  font-size: clamp(1.75rem, 5vw, 36px);
   line-height: 1.05;
   letter-spacing: -0.02em;
   margin: 0 0 16px;
@@ -695,7 +697,7 @@ img {
 .page-title {
   font-family: var(--display);
   font-weight: 800;
-  font-size: 46px;
+  font-size: clamp(1.9rem, 6.5vw, 46px);
   letter-spacing: -0.02em;
   margin: 0;
 }
@@ -952,8 +954,8 @@ img {
 .product__title {
   font-family: var(--display);
   font-weight: 800;
-  font-size: 40px;
-  line-height: 1.04;
+  font-size: clamp(1.75rem, 6vw, 40px);
+  line-height: 1.06;
   letter-spacing: -0.02em;
   margin: 0 0 16px;
 }
@@ -1113,8 +1115,8 @@ img {
 .hero-page__title {
   font-family: var(--display);
   font-weight: 800;
-  font-size: 56px;
-  line-height: 1;
+  font-size: clamp(2rem, 7.5vw, 56px);
+  line-height: 1.02;
   letter-spacing: -0.025em;
   margin: 0 0 20px;
   max-width: 900px;
@@ -1221,7 +1223,7 @@ img {
 .cta-dark__title {
   font-family: var(--display);
   font-weight: 800;
-  font-size: 30px;
+  font-size: clamp(1.6rem, 4.5vw, 30px);
   letter-spacing: -0.02em;
   margin: 0;
   max-width: 600px;
@@ -1263,8 +1265,8 @@ img {
 .about-intro__title {
   font-family: var(--display);
   font-weight: 800;
-  font-size: 52px;
-  line-height: 1;
+  font-size: clamp(2rem, 7vw, 52px);
+  line-height: 1.03;
   letter-spacing: -0.025em;
   margin: 0 0 24px;
 }
@@ -1293,7 +1295,7 @@ img {
 .number__value {
   font-family: var(--display);
   font-weight: 800;
-  font-size: 52px;
+  font-size: clamp(2.25rem, 6vw, 52px);
   line-height: 1;
   letter-spacing: -0.02em;
 }
@@ -1331,7 +1333,7 @@ img {
 .contacts__title {
   font-family: var(--display);
   font-weight: 800;
-  font-size: 52px;
+  font-size: clamp(2rem, 7vw, 52px);
   letter-spacing: -0.025em;
   margin: 0 0 40px;
 }
@@ -1662,14 +1664,7 @@ img {
     grid-template-columns: 1fr;
   }
   .hero__title {
-    font-size: 40px;
     min-height: 0;
-  }
-  .page-title,
-  .contacts__title,
-  .about-intro__title,
-  .hero-page__title {
-    font-size: 34px;
   }
 }
 
@@ -2368,5 +2363,434 @@ img {
   .specrow__remove {
     order: 3;
     margin-left: auto;
+  }
+}
+
+/* ========================================================================
+   MOBILE-FIRST RESPONSIVE LAYER
+   Adaptive header (hamburger drawer), fluid spacing, touch ergonomics.
+   Desktop composition is untouched; everything here is scoped to the
+   breakpoints below so the ≥1024px layout renders exactly as before.
+   ===================================================================== */
+
+/* ---- global safeguards: never allow horizontal overflow -------------- */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  overflow-x: hidden;
+}
+img,
+video,
+iframe,
+svg {
+  max-width: 100%;
+}
+video {
+  height: auto;
+}
+
+/* ---- hamburger button (hidden on desktop) --------------------------- */
+.header__burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -8px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+}
+.header__burger-box {
+  position: relative;
+  display: block;
+  width: 24px;
+  height: 16px;
+}
+.header__burger-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease;
+}
+.header__burger-line:nth-child(1) {
+  top: 0;
+}
+.header__burger-line:nth-child(2) {
+  top: 7px;
+}
+.header__burger-line:nth-child(3) {
+  top: 14px;
+}
+.header__burger.is-open .header__burger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.header__burger.is-open .header__burger-line:nth-child(2) {
+  opacity: 0;
+}
+.header__burger.is-open .header__burger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ---- mobile drawer + backdrop --------------------------------------- */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(20, 17, 15, 0.42);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+.mobile-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.3s ease;
+}
+.mobile-menu__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(340px, 86vw);
+  height: 100vh;
+  height: 100dvh;
+  padding: 118px 24px calc(28px + env(safe-area-inset-bottom)) 24px;
+  background: var(--bg);
+  border-left: 1px solid var(--line);
+  box-shadow: -24px 0 60px -30px rgba(20, 17, 15, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  transform: translateX(100%);
+  transition: transform 0.34s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.mobile-menu.is-open .mobile-menu__panel {
+  transform: translateX(0);
+}
+.mobile-menu__links {
+  display: flex;
+  flex-direction: column;
+}
+.mobile-menu__link {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 6px 4px;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  transition: color 0.2s;
+}
+.mobile-menu__link.is-active {
+  color: var(--red);
+}
+.mobile-menu__link:active {
+  color: var(--red);
+}
+.mobile-menu__spec {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  margin-top: 20px;
+  padding: 0 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.mobile-menu__spec svg {
+  flex-shrink: 0;
+}
+.mobile-menu__cta {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 14px;
+  font-size: 16px;
+  padding: 15px;
+}
+.mobile-menu__contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+.mobile-menu__contacts a {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+/* keep the drawer out of the desktop layout entirely */
+@media (min-width: 861px) {
+  .mobile-menu {
+    display: none;
+  }
+}
+
+/* ========================================================================
+   BREAKPOINT: ≤1024px  — tablets
+   ===================================================================== */
+@media (max-width: 1024px) {
+  .footer__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 40px;
+  }
+  .catalog-head__row {
+    flex-wrap: wrap;
+  }
+}
+
+/* ========================================================================
+   BREAKPOINT: ≤860px  — collapse nav into hamburger
+   ===================================================================== */
+@media (max-width: 860px) {
+  .header__nav,
+  .header__contact {
+    display: none;
+  }
+  .header__spec-label {
+    display: none;
+  }
+  .header__spec {
+    width: 44px;
+    height: 44px;
+    justify-content: center;
+    padding: 0;
+  }
+  .header__actions {
+    gap: 6px;
+  }
+  .header__burger {
+    display: inline-flex;
+  }
+  .header__main {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  /* touch ergonomics: comfortable hit areas + full-width primary actions */
+  .hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hero__actions .btn {
+    width: 100%;
+    min-height: 48px;
+  }
+  .cta__action {
+    justify-content: stretch;
+  }
+  .cta__action .btn {
+    width: 100%;
+    min-height: 48px;
+  }
+  .product__facts {
+    flex-wrap: wrap;
+    gap: 20px 32px;
+  }
+  .buy .btn-red,
+  .buy .btn-outline {
+    margin-left: 0;
+    flex: 1 1 100%;
+    min-height: 48px;
+  }
+
+  /* forms: full width + 16px to stop iOS auto-zoom on focus */
+  .form input,
+  .form textarea,
+  .specform input,
+  .specform textarea,
+  .search__input {
+    font-size: 16px;
+    width: 100%;
+  }
+  .qty__input {
+    font-size: 16px;
+  }
+  .search {
+    max-width: none;
+  }
+}
+
+/* ========================================================================
+   BREAKPOINT: ≤680px  — single column, tighter chrome
+   (base grid collapse already handled above; this refines spacing)
+   ===================================================================== */
+@media (max-width: 680px) {
+  /* long single words in the wide display face must never overflow */
+  .hero__title,
+  .page-title,
+  .product__title,
+  .hero-page__title,
+  .about-intro__title,
+  .contacts__title,
+  .cta__title,
+  .cta-dark__title,
+  .h2 {
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+  }
+  .mobile-menu__panel {
+    padding-top: 90px;
+  }
+  .section,
+  .section--panel,
+  .hero,
+  .hero-page {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  .section__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .footer {
+    padding-top: 40px;
+    padding-bottom: 32px;
+  }
+  .footer__grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .footer__copy {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    align-items: center;
+  }
+  .footer__manage {
+    margin-left: 0;
+  }
+  .cta,
+  .cta--bar {
+    padding: 32px 24px;
+  }
+  .cta-dark {
+    padding: 32px 24px;
+  }
+  .about-intro__grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .form,
+  .specform {
+    padding: 24px;
+  }
+  .catalog-head__row {
+    align-items: flex-start;
+  }
+  /* comfortable minimum touch target for text/icon buttons */
+  .btn,
+  .cat-btn,
+  .pcard__add,
+  .form__submit,
+  .specform__submit {
+    min-height: 44px;
+  }
+}
+
+/* ========================================================================
+   BREAKPOINT: ≤480px  — phones
+   ===================================================================== */
+@media (max-width: 480px) {
+  :root {
+    --pad-x: 18px;
+  }
+  .gallery__thumbs {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .product {
+    gap: 32px;
+  }
+  .contacts__info {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .hero__tabs {
+    max-width: none;
+  }
+  .viewer {
+    padding: 0;
+  }
+  .viewer__panel {
+    border-radius: 0;
+  }
+}
+
+/* ========================================================================
+   BREAKPOINT: ≤360px  — compact phones (iPhone SE, 320–360)
+   ===================================================================== */
+@media (max-width: 360px) {
+  :root {
+    --pad-x: 16px;
+  }
+  .header__logo {
+    height: 38px;
+  }
+  .footer__logo {
+    height: 34px;
+  }
+}
+
+/* ========================================================================
+   TOUCH DEVICES — swap hover affordances for :active feedback
+   ===================================================================== */
+@media (hover: none) {
+  .pcard:hover,
+  .article:hover,
+  .rcard:hover,
+  .cat-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  .pcard:active,
+  .cat-card:active {
+    transform: scale(0.99);
+  }
+  .btn-red:active {
+    background: var(--red-dark);
+  }
+  .btn-outline:active {
+    border-color: var(--ink);
+  }
+  .btn-outline-red:active {
+    background: var(--red);
+    color: #fff;
+  }
+}
+
+/* drawer respects reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu,
+  .mobile-menu__panel,
+  .header__burger-line {
+    transition-duration: 0.001ms !important;
   }
 }
