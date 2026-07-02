@@ -2,17 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSettings } from "../lib/hooks.jsx";
 import { useInquiry } from "../lib/inquiry.jsx";
-
-const NAV = [
-  { label: "Продукция", to: "/catalog" },
-  { label: "Каталоги", to: "/catalogs" },
-  { label: "Решения", to: "/solutions" },
-  { label: "О компании", to: "/about" },
-  { label: "Контакты", to: "/contacts" },
-];
-
-// "+7 (343) 302-00-96" → "+73433020096" for a tel: href.
-export const telHref = (phone) => "tel:" + String(phone || "").replace(/[^\d+]/g, "");
+import { NAV, telHref } from "../config/site.js";
 
 export default function Header() {
   const settings = useSettings();

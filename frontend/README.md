@@ -4,7 +4,8 @@ React + Vite SPA that implements the **QP Tool 1 - Clean** design from the
 Claude Design export, wired to the Django REST API in `../backend`.
 
 - **Stack:** React 18 · Vite 5 · React Router 6
-- **Fonts:** Archivo / Archivo Expanded · Manrope · JetBrains Mono (Google Fonts)
+- **Fonts:** Montserrat · Manrope · JetBrains Mono (Google Fonts, грузятся
+  неблокирующе; системный fallback работает при недоступности CDN)
 - **Design tokens** ported 1:1 from the export (`src/styles.css`)
 
 ## Screens
@@ -80,6 +81,55 @@ once JS runs; prerendering bakes them into the served HTML for crawlers.
 
 For production, set `VITE_API_BASE` to the API origin (e.g. `https://api.qptool.ru/api`)
 in `.env` before building — see `.env.example`.
+
+## Production readiness
+
+Проект подготовлен к продакшену. Ключевые механизмы:
+
+- **Конфигурация** централизована в `src/config/site.js` (данные компании,
+  навигация, SEO, ID аналитики). Меняем в одном месте.
+- **Code splitting** — каждая страница и админ-панель грузятся отдельными
+  чанками (`React.lazy` + `Suspense`); главный бандл ≈ 61 КБ gzip.
+- **Ошибки/состояния** — `ErrorBoundary` ловит сбои рендера; есть страница
+  404, skeleton-загрузка, empty/error-состояния (`src/components/States.jsx`).
+- **SEO/PWA** — `robots.txt`, `sitemap.xml`, `manifest.webmanifest`, favicon,
+  per-route `<title>/OG/JSON-LD` (`useSeo`).
+- **Доступность** — skip-link, `<main>`-landmark, focus-trap в модалках,
+  клавиатурная навигация карточек, `aria-*`, видимый фокус.
+- **Формы** — единый хук `useLeadForm`, явное согласие 152-ФЗ (`ConsentField`),
+  защита от повторной отправки, корректные типы полей.
+- **Линт** — `npm run lint` (ESLint 9, flat config), сборка проходит чисто.
+
+### Аналитика (РФ)
+
+Подключается через адаптер `src/lib/analytics.js` **только если задан ID** в
+`.env` (иначе — no-op). Приоритет для РФ — **Яндекс.Метрика** (грузится с
+`mc.yandex.ru`, стабильно доступна в РФ). Google Analytics — опционально.
+
+```
+VITE_YANDEX_METRIKA_ID=12345678
+VITE_GA_MEASUREMENT_ID=G-XXXXXXX   # необязательно
+```
+
+Добавить провайдера (VK Пиксель, Top.Mail.ru) можно в одном файле-адаптере,
+не трогая страницы.
+
+### Ручные шаги перед публичным запуском
+
+- [ ] **Домен** — если не `qptool.ru`, задать `VITE_SITE_URL` и поправить
+      абсолютные URL в `index.html`, `public/robots.txt`, `public/sitemap.xml`.
+- [ ] **Растровые иконки** — сгенерировать из `public/favicon.svg`:
+      `apple-touch-icon.png` (180×180) и, при желании, PNG 192/512 для манифеста
+      (SVG-иконки уже работают в Chrome/Android).
+- [ ] **og-image** — заменить `public/assets/og-cover.svg` на растровый
+      **1200×630 PNG/JPG** для корректных превью в Telegram/VK.
+- [ ] **Шрифты** — для полной независимости от Google в РФ рекомендуется
+      self-hosting (положить `.woff2` в `public/fonts`, заменить `<link>` на
+      `@font-face`). Сейчас при блокировке CDN сайт остаётся читаемым на
+      системных шрифтах.
+- [ ] **Политика конфиденциальности** (`src/pages/Privacy.jsx`) — выверить
+      формулировки под реальные процессы (желательно с юристом).
+- [ ] **Аналитика** — вписать ID Яндекс.Метрики; подключить сайт в Яндекс.Вебмастер.
 
 ## Resilience
 

@@ -3,6 +3,8 @@ import { api } from "../lib/api.js";
 import { useFetch } from "../lib/hooks.jsx";
 import { useSeo } from "../lib/seo.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";
+import Modal from "../components/Modal.jsx";
+import { PageLoader, EmptyState } from "../components/States.jsx";
 
 export default function Catalogs() {
   const { data: catalogs, loading } = useFetch(api.catalogs, [], []);
@@ -30,9 +32,12 @@ export default function Catalogs() {
 
       <div className="section">
         {loading && list.length === 0 ? (
-          <div className="loading">ЗАГРУЗКА…</div>
+          <PageLoader label="Загрузка каталогов…" />
         ) : list.length === 0 ? (
-          <div className="empty">КАТАЛОГИ ПОКА НЕ ЗАГРУЖЕНЫ</div>
+          <EmptyState
+            title="Каталоги пока не загружены"
+            text="Скоро здесь появятся PDF-каталоги и прайс-листы. Пока вы можете перейти в каталог продукции или оставить заявку."
+          />
         ) : (
           <div className="cat-grid">
             {list.map((c) => (
@@ -73,9 +78,13 @@ export default function Catalogs() {
       </div>
 
       {/* in-browser viewer */}
-      {viewing && (
-        <div className="viewer" onClick={() => setViewing(null)}>
-          <div className="viewer__panel" onClick={(e) => e.stopPropagation()}>
+      <Modal
+        open={Boolean(viewing)}
+        onClose={() => setViewing(null)}
+        label={viewing ? `Просмотр каталога: ${viewing.title}` : "Просмотр каталога"}
+      >
+        {viewing && (
+          <>
             <div className="viewer__bar">
               <span className="viewer__title">{viewing.title}</span>
               <div style={{ display: "flex", gap: 10 }}>
@@ -88,9 +97,9 @@ export default function Catalogs() {
               </div>
             </div>
             <iframe className="viewer__frame" src={viewing.file} title={viewing.title} />
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </Modal>
     </div>
   );
 }

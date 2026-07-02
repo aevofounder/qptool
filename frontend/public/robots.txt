@@ -1,0 +1,18 @@
+# robots.txt — QP Tool
+# Разрешаем индексацию всего публичного сайта, закрываем служебные разделы.
+
+User-agent: *
+Allow: /
+Disallow: /manage
+Disallow: /manage/
+Disallow: /specification
+
+# Явно приветствуем основных поисковых роботов рунета.
+User-agent: Yandex
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://qptool.ru/sitemap.xml
+Host: qptool.ru

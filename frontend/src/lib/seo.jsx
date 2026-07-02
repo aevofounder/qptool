@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { SEO } from "../config/site.js";
 
 /**
  * useSeo — imperatively manage per-route document head for an SPA without
@@ -12,8 +13,8 @@ import { useEffect } from "react";
  *     jsonLd: { "@context": "https://schema.org", "@type": "…", … },
  *   });
  */
-const SITE_NAME = "QP Tool";
-const TITLE_SUFFIX = "QP Tool — металлорежущий инструмент и оснащение станков";
+const SITE_NAME = SEO.siteName;
+const TITLE_SUFFIX = SEO.titleSuffix;
 
 function upsertMeta(attr, key, content) {
   if (content == null) return;
@@ -48,18 +49,22 @@ export function useSeo({ title, description, jsonLd, type = "website", noindex =
     upsertMeta("name", "robots", noindex ? "noindex,nofollow" : "index,follow");
     upsertLink("canonical", url);
 
+    const ogImageUrl = window.location.origin + SEO.ogImage;
+
     // Open Graph
     upsertMeta("property", "og:site_name", SITE_NAME);
     upsertMeta("property", "og:type", type);
     upsertMeta("property", "og:title", fullTitle);
     upsertMeta("property", "og:description", desc);
     upsertMeta("property", "og:url", url);
-    upsertMeta("property", "og:locale", "ru_RU");
+    upsertMeta("property", "og:locale", SEO.locale);
+    upsertMeta("property", "og:image", ogImageUrl);
 
     // Twitter
     upsertMeta("name", "twitter:card", "summary_large_image");
     upsertMeta("name", "twitter:title", fullTitle);
     upsertMeta("name", "twitter:description", desc);
+    upsertMeta("name", "twitter:image", ogImageUrl);
 
     // Structured data (one managed block, replaced per route).
     const SD_ID = "route-jsonld";

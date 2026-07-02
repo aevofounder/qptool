@@ -1,0 +1,28 @@
+{
+  "name": "QP Tool — металлорежущий инструмент",
+  "short_name": "QP Tool",
+  "description": "Официальный поставщик металлорежущего инструмента и оснащения станков в Екатеринбурге с 2009 года.",
+  "lang": "ru-RU",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fafaf8",
+  "theme_color": "#0f0f10",
+  "categories": ["business", "shopping"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-maskable.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "maskable"
+    }
+  ]
+}

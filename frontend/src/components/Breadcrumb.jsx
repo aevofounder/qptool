@@ -7,19 +7,24 @@ import { useNavigate } from "react-router-dom";
 export default function Breadcrumb({ items }) {
   const navigate = useNavigate();
   return (
-    <div className="crumb">
-      {items.map((item, i) => (
-        <span key={i}>
-          {item.to ? (
-            <button type="button" className="crumb__link" onClick={() => navigate(item.to)}>
-              {item.label}
-            </button>
-          ) : (
-            <span className="cur">{item.label}</span>
-          )}
-          {i < items.length - 1 ? " / " : ""}
-        </span>
-      ))}
-    </div>
+    <nav className="crumb" aria-label="Хлебные крошки">
+      {items.map((item, i) => {
+        const isLast = i === items.length - 1;
+        return (
+          <span key={i}>
+            {item.to ? (
+              <button type="button" className="crumb__link" onClick={() => navigate(item.to)}>
+                {item.label}
+              </button>
+            ) : (
+              <span className="cur" aria-current={isLast ? "page" : undefined}>
+                {item.label}
+              </span>
+            )}
+            {!isLast ? " / " : ""}
+          </span>
+        );
+      })}
+    </nav>
   );
 }

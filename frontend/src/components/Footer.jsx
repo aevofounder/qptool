@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useSettings } from "../lib/hooks.jsx";
-import { telHref } from "./Header.jsx";
+import { telHref, COMPANY } from "../config/site.js";
 
 export default function Footer() {
   const settings = useSettings();
@@ -55,7 +55,14 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer__copy">
-          © 2009 {settings.company_name} · Все права защищены
+          © {COMPANY.foundingYear}–{new Date().getFullYear()} {settings.company_name} · Все права защищены
+          <button
+            type="button"
+            className="footer__manage"
+            onClick={() => navigate("/privacy")}
+          >
+            Политика конфиденциальности
+          </button>
           <button
             type="button"
             className="footer__manage"

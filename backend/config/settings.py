@@ -9,6 +9,7 @@ PostgreSQL by setting DATABASE_URL / POSTGRES_* and DJANGO_DEBUG=0.
 from pathlib import Path
 import os
 
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -156,6 +157,24 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# WhiteNoise — отдаём статику Django (в т.ч. админку) прямо приложением, со
+# сжатием и кэш-хешированием, без отдельного веб-сервера. Подключаем, только
+# если пакет установлен, чтобы не ломать окружения без него.
+try:
+    import whitenoise  # noqa: F401
+
+    # Сразу после SecurityMiddleware, до остальных.
+    MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+    if not DEBUG:
+        STORAGES = {
+            "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+            "staticfiles": {
+                "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"
+            },
+        }
+except ImportError:
+    pass
+
 
 # --------------------------------------------------------------------------- #
 # Django REST Framework
@@ -193,6 +212,35 @@ REST_FRAMEWORK = {
 # --------------------------------------------------------------------------- #
 CORS_ALLOWED_ORIGINS = env_list("DJANGO_CORS_ALLOWED_ORIGINS", default=[])
 CORS_ALLOW_ALL_ORIGINS = env_bool("DJANGO_CORS_ALLOW_ALL", default=DEBUG)
+
+
+# --------------------------------------------------------------------------- #
+# Security — базовые заголовки применяются всегда; жёсткие HTTPS-настройки
+# включаются только в продакшене (DEBUG=0), чтобы не мешать локальной разработке.
+# --------------------------------------------------------------------------- #
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+X_FRAME_OPTIONS = "DENY"
+
+if not DEBUG:
+    # Не даём случайно уехать в прод с дефолтным небезопасным ключом.
+    if SECRET_KEY.startswith("django-insecure"):
+        raise ImproperlyConfigured(
+            "DJANGO_SECRET_KEY должен быть задан надёжным значением в продакшене."
+        )
+
+    # За обратным прокси (nginx/traefik) доверяем заголовку протокола.
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = env_bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
+
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+
+    # HSTS — год, с поддоменами и preload (переопределяется через env).
+    SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_HSTS_SECONDS", "31536000"))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 
 # --------------------------------------------------------------------------- #

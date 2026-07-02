@@ -1,14 +1,15 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../lib/api.js";
 import {
   useInquiry,
   buildSpecText,
   buildInquiryMessage,
   pluralRu,
 } from "../lib/inquiry.jsx";
+import { useLeadForm } from "../lib/useLeadForm.js";
 import { useSeo } from "../lib/seo.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";
+import ConsentField from "../components/ConsentField.jsx";
 
 const EMPTY = { name: "", phone: "", email: "", comment: "" };
 
@@ -16,7 +17,8 @@ export default function Specification() {
   const navigate = useNavigate();
   const inquiry = useInquiry();
   const [form, setForm] = useState(EMPTY);
-  const [status, setStatus] = useState({ state: "idle", error: null });
+  const [consent, setConsent] = useState(false);
+  const { submit, sending, sent, error } = useLeadForm();
   const [copied, setCopied] = useState(false);
 
   useSeo({
@@ -46,27 +48,23 @@ export default function Specification() {
     }
   };
 
-  const submit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (!inquiry.count) return;
-    setStatus({ state: "sending", error: null });
-    try {
-      await api.createLead({
-        name: form.name,
-        phone: form.phone,
-        email: form.email,
-        message: buildInquiryMessage(inquiry.items, form.comment),
-        source: "inquiry_spec",
-        consent: true,
-      });
-      setStatus({ state: "sent", error: null });
+    if (!consent) return; // согласие обязательно (152-ФЗ)
+    const ok = await submit({
+      name: form.name,
+      phone: form.phone,
+      email: form.email,
+      message: buildInquiryMessage(inquiry.items, form.comment),
+      source: "inquiry_spec",
+      consent: true,
+      page_url: window.location.href,
+    });
+    if (ok) {
       setForm(EMPTY);
+      setConsent(false);
       inquiry.clear();
-    } catch (err) {
-      const msg =
-        (err.detail && (err.detail.detail || JSON.stringify(err.detail))) ||
-        "Не удалось отправить заявку. Попробуйте позже.";
-      setStatus({ state: "error", error: msg });
     }
   };
 
@@ -87,7 +85,7 @@ export default function Specification() {
           )}
         </div>
 
-        {status.state === "sent" ? (
+        {sent ? (
           <div className="specpage__done">
             <div className="specpage__done-mark" aria-hidden="true">✓</div>
             <h2 className="specpage__done-title">Заявка отправлена</h2>
@@ -210,54 +208,62 @@ export default function Specification() {
 
             {/* right: send as a request */}
             <aside className="specpage__aside">
-              <form className="specform" onSubmit={submit}>
+              <form className="specform" onSubmit={onSubmit} noValidate>
                 <h2 className="specform__title">Отправить как заявку</h2>
                 <p className="specform__lead">
                   Перезвоним в течение рабочего дня и пришлём расчёт стоимости.
                 </p>
                 <div className="specform__fields">
                   <input
+                    name="name"
+                    autoComplete="name"
+                    aria-label="Ваше имя"
                     placeholder="Ваше имя"
                     value={form.name}
                     onChange={update("name")}
                     required
                   />
                   <input
+                    name="phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    aria-label="Телефон"
                     placeholder="Телефон"
                     value={form.phone}
                     onChange={update("phone")}
                     required
                   />
                   <input
-                    placeholder="E-mail"
+                    name="email"
                     type="email"
+                    autoComplete="email"
+                    aria-label="E-mail"
+                    placeholder="E-mail"
                     value={form.email}
                     onChange={update("email")}
                   />
                   <textarea
+                    name="comment"
+                    aria-label="Комментарий покупателя"
                     placeholder="Комментарий покупателя: сроки, условия поставки, пожелания…"
                     rows={4}
                     value={form.comment}
                     onChange={update("comment")}
                   />
+                  <ConsentField id="consent-spec" checked={consent} onChange={setConsent} />
                   <button
                     type="submit"
                     className="btn btn-red specform__submit"
-                    disabled={status.state === "sending"}
+                    disabled={sending || !consent}
                   >
-                    {status.state === "sending"
-                      ? "Отправляем…"
-                      : `Отправить заявку · ${countLabel}`}
+                    {sending ? "Отправляем…" : `Отправить заявку · ${countLabel}`}
                   </button>
-                  {status.state === "error" && (
-                    <p className="form__note" style={{ color: "var(--red)" }}>
-                      {status.error}
+                  {error && (
+                    <p className="form__note" role="alert" style={{ color: "var(--red)" }}>
+                      {error}
                     </p>
                   )}
-                  <p className="form__note">
-                    Нажимая кнопку, вы соглашаетесь с политикой обработки
-                    персональных данных.
-                  </p>
                 </div>
               </form>
             </aside>

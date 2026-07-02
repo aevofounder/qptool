@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { useFetch } from "../lib/hooks.jsx";
 import { useSeo } from "../lib/seo.jsx";
+import { activateOnKey } from "../lib/a11y.js";
+import { ORGANIZATION_JSONLD, SEO } from "../config/site.js";
 import {
   FALLBACK_ADVANTAGES,
   FALLBACK_ARTICLES,
@@ -48,28 +50,8 @@ export default function Home() {
 
   useSeo({
     title: null, // home uses the full brand title
-    description:
-      "QP Tool — официальный поставщик металлорежущего инструмента и оснащения станков в Екатеринбурге с 2009 года. Фрезы, свёрла, токарные пластины, метчики и резцы со склада и под заказ.",
-    jsonLd: {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: "ООО «КуПиТул» (QP Tool)",
-      url: typeof window !== "undefined" ? window.location.origin : "",
-      foundingDate: "2009",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Екатеринбург",
-        addressCountry: "RU",
-        streetAddress: "ул. Московская, д. 195, офис 1026, 1037",
-        postalCode: "620144",
-      },
-      contactPoint: {
-        "@type": "ContactPoint",
-        telephone: "+7-343-302-00-96",
-        contactType: "sales",
-        email: "info@qptool.ru",
-      },
-    },
+    description: SEO.defaultDescription,
+    jsonLd: ORGANIZATION_JSONLD,
   });
   const { data: heroSlides } = useFetch(api.heroSlides, [], FALLBACK_HERO);
   const { data: advantages } = useFetch(api.advantages, [], FALLBACK_ADVANTAGES);
@@ -180,7 +162,15 @@ export default function Home() {
         </div>
         <div className="services">
           {SERVICES.map((sv) => (
-            <div className="service" key={sv.num} onClick={() => navigate(sv.to)}>
+            <div
+              className="service"
+              key={sv.num}
+              role="link"
+              tabIndex={0}
+              aria-label={sv.title}
+              onClick={() => navigate(sv.to)}
+              onKeyDown={activateOnKey(() => navigate(sv.to))}
+            >
               <div className="service__num">{sv.num}</div>
               <h3 className="service__title">{sv.title}</h3>
               <p className="service__text">{sv.text}</p>

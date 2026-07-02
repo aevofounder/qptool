@@ -1,14 +1,15 @@
 // Static fallbacks mirroring the backend seed data, so the marketing pages
 // stay visually complete if the API is unreachable or still loading.
+import { COMPANY } from "../config/site.js";
 
 export const FALLBACK_SETTINGS = {
-  company_name: "ООО «КуПиТул» (QP Tool)",
-  tagline: "ОФИЦИАЛЬНЫЙ ПОСТАВЩИК · ЕКАТЕРИНБУРГ · С 2009",
-  phone_primary: "+7 (343) 302-00-96",
-  phone_secondary: "+7 (912) 051-82-21",
-  email: "info@qptool.ru",
-  address: "620144, г. Екатеринбург, ул. Московская, д. 195, офис 1026, 1037",
-  work_hours: "Пн–Пт: 9:00–18:00; Сб–Вс: выходной",
+  company_name: COMPANY.legalName,
+  tagline: COMPANY.tagline,
+  phone_primary: COMPANY.phonePrimary,
+  phone_secondary: COMPANY.phoneSecondary,
+  email: COMPANY.email,
+  address: COMPANY.address,
+  work_hours: COMPANY.workHours,
   map_embed_url: "",
 };
 

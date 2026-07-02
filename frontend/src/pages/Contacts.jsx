@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../lib/api.js";
 import { useSettings } from "../lib/hooks.jsx";
 import { useInquiry, buildInquiryMessage } from "../lib/inquiry.jsx";
+import { useLeadForm } from "../lib/useLeadForm.js";
 import { useSeo } from "../lib/seo.jsx";
-import { telHref } from "../components/Header.jsx";
+import { telHref } from "../config/site.js";
 import Breadcrumb from "../components/Breadcrumb.jsx";
+import ConsentField from "../components/ConsentField.jsx";
 
 const EMPTY = { name: "", phone: "", email: "", message: "" };
 
@@ -25,7 +26,8 @@ export default function Contacts() {
   const inquiry = useInquiry();
   const navigate = useNavigate();
   const [form, setForm] = useState(EMPTY);
-  const [status, setStatus] = useState({ state: "idle", error: null });
+  const [consent, setConsent] = useState(false);
+  const { submit, sending, sent, error } = useLeadForm();
 
   useSeo({
     title: "Контакты",
@@ -35,29 +37,25 @@ export default function Contacts() {
 
   const update = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
-  const submit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    setStatus({ state: "sending", error: null });
+    if (!consent) return; // согласие обязательно (152-ФЗ)
     // Compose the message: the inquiry list (спецификация) as tidy paragraphs,
     // with the typed comment treated as the buyer's note.
     const message = inquiry.items.length
       ? buildInquiryMessage(inquiry.items, form.message)
       : form.message || "";
-    try {
-      await api.createLead({
-        ...form,
-        message,
-        source: inquiry.items.length ? "inquiry_spec" : "contact_form",
-        consent: true,
-      });
-      setStatus({ state: "sent", error: null });
+    const ok = await submit({
+      ...form,
+      message,
+      source: inquiry.items.length ? "inquiry_spec" : "contact_form",
+      consent: true,
+      page_url: window.location.href,
+    });
+    if (ok) {
       setForm(EMPTY);
+      setConsent(false);
       inquiry.clear();
-    } catch (err) {
-      const msg =
-        (err.detail && (err.detail.detail || JSON.stringify(err.detail))) ||
-        "Не удалось отправить заявку. Попробуйте позже.";
-      setStatus({ state: "error", error: msg });
     }
   };
 
@@ -166,35 +164,62 @@ export default function Contacts() {
               </div>
             )}
 
-            <form className="form__fields" onSubmit={submit}>
-              <input placeholder="Ваше имя" value={form.name} onChange={update("name")} required />
-              <input placeholder="Телефон" value={form.phone} onChange={update("phone")} required />
-              <input placeholder="E-mail" type="email" value={form.email} onChange={update("email")} />
+            <form className="form__fields" onSubmit={onSubmit} noValidate>
+              <input
+                name="name"
+                autoComplete="name"
+                aria-label="Ваше имя"
+                placeholder="Ваше имя"
+                value={form.name}
+                onChange={update("name")}
+                required
+              />
+              <input
+                name="phone"
+                type="tel"
+                inputMode="tel"
+                autoComplete="tel"
+                aria-label="Телефон"
+                placeholder="Телефон"
+                value={form.phone}
+                onChange={update("phone")}
+                required
+              />
+              <input
+                name="email"
+                type="email"
+                autoComplete="email"
+                aria-label="E-mail"
+                placeholder="E-mail"
+                value={form.email}
+                onChange={update("email")}
+              />
               <textarea
+                name="message"
+                aria-label="Комментарий или список позиций"
                 placeholder="Комментарий или список позиций"
                 rows={4}
                 value={form.message}
                 onChange={update("message")}
               />
+              <ConsentField checked={consent} onChange={setConsent} />
               <button
                 type="submit"
                 className="btn btn-red form__submit"
-                disabled={status.state === "sending"}
+                disabled={sending || !consent}
               >
-                {status.state === "sending" ? "Отправляем…" : "Отправить заявку"}
+                {sending ? "Отправляем…" : "Отправить заявку"}
               </button>
-              {status.state === "sent" && (
-                <p className="form__ok">Заявка отправлена — мы свяжемся с вами.</p>
-              )}
-              {status.state === "error" && (
-                <p className="form__note" style={{ color: "var(--red)" }}>
-                  {status.error}
+              {sent && (
+                <p className="form__ok" role="status">
+                  Заявка отправлена — мы свяжемся с вами.
                 </p>
               )}
-              <p className="form__note">
-                Нажимая кнопку, вы соглашаетесь с политикой обработки персональных
-                данных.
-              </p>
+              {error && (
+                <p className="form__note" role="alert" style={{ color: "var(--red)" }}>
+                  {error}
+                </p>
+              )}
             </form>
           </div>
         </div>

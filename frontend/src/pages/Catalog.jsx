@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { useFetch } from "../lib/hooks.jsx";
 import { useInquiry } from "../lib/inquiry.jsx";
 import { useSeo } from "../lib/seo.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";
+import { EmptyState, Skeleton } from "../components/States.jsx";
 
 // «Обработка» checkboxes. `kw` is the keyword the backend matches (case-
 // insensitively) against each product's «Обработка» spec value
@@ -188,13 +189,34 @@ export default function Catalog() {
         {/* grid */}
         <div className="product-grid-wrap">
           {loading && products.length === 0 ? (
-            <div className="loading">ЗАГРУЗКА…</div>
-          ) : visible.length === 0 ? (
-            <div className="empty">
-              {query.trim()
-                ? `НИЧЕГО НЕ НАЙДЕНО ПО ЗАПРОСУ «${query.trim()}»`
-                : "НЕТ ПОЗИЦИЙ ПО ВЫБРАННЫМ ФИЛЬТРАМ"}
+            <div className="product-grid" aria-busy="true" aria-label="Загрузка каталога">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div className="pcard pcard--skeleton" key={i}>
+                  <Skeleton className="pcard__media" />
+                  <div className="pcard__body">
+                    <Skeleton style={{ height: 12, width: "40%", marginBottom: 12 }} />
+                    <Skeleton style={{ height: 18, width: "85%", marginBottom: 8 }} />
+                    <Skeleton style={{ height: 18, width: "60%" }} />
+                  </div>
+                </div>
+              ))}
             </div>
+          ) : visible.length === 0 ? (
+            <EmptyState
+              title={query.trim() ? "Ничего не найдено" : "Нет позиций по фильтрам"}
+              text={
+                query.trim()
+                  ? `По запросу «${query.trim()}» ничего не нашлось. Попробуйте изменить формулировку или сбросить фильтры.`
+                  : "Под выбранные фильтры пока нет позиций. Сбросьте часть условий, чтобы увидеть больше."
+              }
+              action={
+                hasActiveFilters && (
+                  <button type="button" className="btn btn-outline-red" onClick={resetFilters}>
+                    Сбросить фильтры
+                  </button>
+                )
+              }
+            />
           ) : (
             <div className="product-grid">
               {visible.map((p) => {
@@ -222,7 +244,16 @@ export default function Catalog() {
                         {p.category_label}
                         {p.brand ? ` · ${p.brand}` : ""}
                       </div>
-                      <h3 className="pcard__name">{p.name}</h3>
+                      <h3 className="pcard__name">
+                        {/* Реальная ссылка = доступ с клавиатуры; клик по всей
+                            карточке остаётся для мыши. */}
+                        <Link
+                          to={`/product/${p.slug}`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {p.name}
+                        </Link>
+                      </h3>
                       <div className="pcard__foot">
                         <span className="pcard__price">Цена по запросу</span>
                         <span className="pcard__open">Открыть →</span>

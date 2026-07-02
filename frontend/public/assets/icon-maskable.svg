@@ -1,0 +1,8 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="QP Tool">
+  <!-- Полное поле-фон (maskable safe-zone): важное содержимое держим в центре ~80% -->
+  <rect width="512" height="512" fill="#14110f"/>
+  <rect x="0" y="392" width="512" height="28" fill="#E30016"/>
+  <text x="50%" y="47%" text-anchor="middle" dominant-baseline="middle"
+        font-family="'Montserrat','Segoe UI',Arial,sans-serif" font-weight="800"
+        font-size="210" letter-spacing="-6" fill="#ffffff">QP</text>
+</svg>

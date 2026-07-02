@@ -4,7 +4,9 @@ import { api } from "../lib/api.js";
 import { useFetch } from "../lib/hooks.jsx";
 import { useInquiry } from "../lib/inquiry.jsx";
 import { useSeo } from "../lib/seo.jsx";
+import { activateOnKey } from "../lib/a11y.js";
 import Breadcrumb from "../components/Breadcrumb.jsx";
+import { PageLoader, EmptyState } from "../components/States.jsx";
 
 export default function Product() {
   const { slug } = useParams();
@@ -61,15 +63,18 @@ export default function Product() {
       : null,
   });
 
-  if (loading) return <div className="loading">ЗАГРУЗКА…</div>;
+  if (loading) return <PageLoader label="Загрузка товара…" />;
   if (error || !product)
     return (
-      <div className="empty">
-        ТОВАР НЕ НАЙДЕН ·{" "}
-        <a className="link-red" onClick={() => navigate("/catalog")}>
-          в каталог →
-        </a>
-      </div>
+      <EmptyState
+        title="Товар не найден"
+        text="Возможно, позиция снята с продажи или ссылка устарела. Вернитесь в каталог, чтобы выбрать инструмент."
+        action={
+          <button type="button" className="btn btn-red" onClick={() => navigate("/catalog")}>
+            В каталог
+          </button>
+        }
+      />
     );
 
   const related = (relatedData?.results || [])
@@ -154,15 +159,19 @@ export default function Product() {
             </div>
           </div>
 
-          <div className="specs__h">ХАРАКТЕРИСТИКИ</div>
-          <div className="specs">
-            {product.specs.map((row, i) => (
-              <div className="spec-row" key={i}>
-                <span className="k">{row.name}</span>
-                <span className="v">{row.value}</span>
+          {(product.specs?.length ?? 0) > 0 && (
+            <>
+              <div className="specs__h">ХАРАКТЕРИСТИКИ</div>
+              <div className="specs">
+                {product.specs.map((row, i) => (
+                  <div className="spec-row" key={i}>
+                    <span className="k">{row.name}</span>
+                    <span className="v">{row.value}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
 
           <div className="buy">
             <div>
@@ -196,7 +205,11 @@ export default function Product() {
                 <div
                   className="rcard"
                   key={p.id}
+                  role="link"
+                  tabIndex={0}
+                  aria-label={p.name}
                   onClick={() => navigate(`/product/${p.slug}`)}
+                  onKeyDown={activateOnKey(() => navigate(`/product/${p.slug}`))}
                 >
                   <div className="rcard__media hatch">
                     <span className="rcard__code">{p.code}</span>
