@@ -13,25 +13,6 @@ const VALUES = [
   { num: "24/7", red: false, title: "Поддержка технолога", text: "Сопровождаем запуск, помогаем подобрать режимы и решить проблемы прямо у станка." },
 ];
 
-const STEPS = [
-  { num: "01", red: true, title: "Аудит парка", text: "Изучаем оборудование, задачи и текущую номенклатуру инструмента." },
-  { num: "02", red: false, title: "Подбор по ТЗ", text: "Готовим спецификацию инструмента и оснастки с расчётом режимов." },
-  { num: "03", red: false, title: "Поставка", text: "Поставляем комплект со склада и под заказ, в согласованные сроки." },
-  { num: "04", red: false, title: "Сопровождение", text: "Поддерживаем при запуске и оптимизируем процесс в работе." },
-];
-
-// Конкретный состав решения — на основе шагов и ценностей выше.
-const INCLUDED = [
-  "Аудит парка оборудования и текущей номенклатуры инструмента",
-  "Спецификация инструмента и оснастки с расчётом режимов резания",
-  "Подбор режущего и вспомогательного инструмента под задачи цеха",
-  "Поставка со склада и под заказ в согласованные сроки",
-  "Сопровождение технологом при запуске и в работе",
-  "Оптимизация номенклатуры и снижение затрат на инструмент",
-  "Работа по договору через одного поставщика — «одно окно»",
-  "Консультации по подбору режимов и решению проблем у станка",
-];
-
 // Группы инструмента, которые закрываем в рамках оснащения (ведут в каталог).
 const SUPPLIED = [
   "Фрезы",
@@ -108,41 +89,6 @@ export default function Solution() {
             </div>
           ))}
         </div>
-      </section>
-
-      {/* process */}
-      <section className="section--panel">
-        <div className="section__inner">
-          <div className="section__head">
-            <h2 className="h2">Как мы работаем</h2>
-            <span className="eyebrow-mono">4 ШАГА</span>
-          </div>
-          <div className="steps">
-            {STEPS.map((st, i) => (
-              <div className="step" key={i}>
-                <div className={`step__num${st.red ? " red" : ""}`}>{st.num}</div>
-                <h4 className="step__title">{st.title}</h4>
-                <p className="step__text">{st.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* what's included */}
-      <section className="section">
-        <div className="section__head" style={{ marginBottom: 28 }}>
-          <h2 className="h2" style={{ fontSize: 30 }}>Что входит в решение</h2>
-          <span className="eyebrow-mono">ПОД КЛЮЧ</span>
-        </div>
-        <ul className="included-grid">
-          {INCLUDED.map((item) => (
-            <li className="included-item" key={item}>
-              <span className="included-item__check" aria-hidden="true">✓</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
       </section>
 
       {/* supplied tools → catalog */}

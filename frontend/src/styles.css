@@ -3473,40 +3473,8 @@ video {
 }
 
 /* ========================================================================
-   SOLUTION — «что входит в решение» + поставляемый инструмент
+   SOLUTION — поставляемый инструмент
    ===================================================================== */
-.included-grid {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px 40px;
-}
-.included-item {
-  display: flex;
-  gap: 14px;
-  align-items: flex-start;
-  font-size: 15.5px;
-  line-height: 1.5;
-  color: var(--text);
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--line);
-}
-.included-item__check {
-  flex: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--red);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1px;
-}
 .supplied__lead {
   font-size: 16px;
   line-height: 1.6;
@@ -3528,11 +3496,4 @@ video {
   border: 1px solid var(--line-2);
   border-radius: 6px;
   background: var(--bg);
-}
-
-@media (max-width: 680px) {
-  .included-grid {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
 }
