@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { useFetch } from "../lib/hooks.jsx";
 import { useInquiry, pluralRu } from "../lib/inquiry.jsx";
@@ -20,7 +20,10 @@ const MATERIALS = [
 export default function Catalog() {
   const navigate = useNavigate();
   const inquiry = useInquiry();
-  const [cat, setCat] = useState("all");
+  const [searchParams] = useSearchParams();
+  // Начальная категория может прийти из URL (?category=slug) — напр. при переходе
+  // из блока «Инструмент, который мы поставляем» на странице «Решения».
+  const [cat, setCat] = useState(() => searchParams.get("category") || "all");
   const [brand, setBrand] = useState("all"); // brand slug
   const [materials, setMaterials] = useState([]); // selected «Обработка» keywords
   const [query, setQuery] = useState("");

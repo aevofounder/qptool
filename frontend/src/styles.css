@@ -3496,4 +3496,12 @@ video {
   border: 1px solid var(--line-2);
   border-radius: 6px;
   background: var(--bg);
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.supplied__tag:hover {
+  border-color: var(--red);
+  color: var(--red);
 }

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { useFetch } from "../lib/hooks.jsx";
 import { useSeo } from "../lib/seo.jsx";
@@ -13,14 +13,14 @@ const VALUES = [
   { num: "24/7", red: false, title: "Поддержка технолога", text: "Сопровождаем запуск, помогаем подобрать режимы и решить проблемы прямо у станка." },
 ];
 
-// Группы инструмента, которые закрываем в рамках оснащения (ведут в каталог).
+// Группы инструмента — каждая ведёт в каталог, отфильтрованный по категории.
 const SUPPLIED = [
-  "Фрезы",
-  "Свёрла",
-  "Токарные пластины",
-  "Метчики",
-  "Резцы",
-  "Оснастка и вспомогательный инструмент",
+  { label: "Фрезы", slug: "frezy" },
+  { label: "Свёрла", slug: "sverla" },
+  { label: "Токарные пластины", slug: "plastiny" },
+  { label: "Метчики", slug: "metchiki" },
+  { label: "Резцы", slug: "rezcy" },
+  { label: "Оснастка и вспомогательный инструмент", slug: "osnastka" },
 ];
 
 const INDUSTRIES = ["Машиностроение", "Металлообработка", "Инструментальное пр-во", "Ремонтные службы"];
@@ -105,12 +105,11 @@ export default function Solution() {
               </p>
               <div className="supplied__tags">
                 {SUPPLIED.map((t) => (
-                  <span className="supplied__tag" key={t}>{t}</span>
+                  <Link className="supplied__tag" key={t.slug} to={`/catalog?category=${t.slug}`}>
+                    {t.label}
+                  </Link>
                 ))}
               </div>
-              <button className="btn btn-red" style={{ marginTop: 8 }} onClick={() => navigate("/catalog")}>
-                Перейти в каталог
-              </button>
             </div>
           </div>
         </div>
