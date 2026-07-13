@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.text import slugify
 
+from common.images import compress_upload
+
 
 class Catalog(models.Model):
     """A downloadable catalog / price-list file (PDF etc.) shown on the
@@ -28,6 +30,7 @@ class Catalog(models.Model):
         if not self.slug:
             base = slugify(self.title, allow_unicode=True) or "catalog"
             self.slug = base
+        compress_upload(self.cover)  # обложку сжимаем; сам PDF (file) не трогаем
         super().save(*args, **kwargs)
 
     @property

@@ -96,6 +96,9 @@ export const api = {
   // ---- admin: site settings ----
   updateSettings: (payload) =>
     request("/settings/", { method: "PATCH", body: JSON.stringify(payload) }),
+  // Загрузка картинок настроек (напр. about_image) — multipart.
+  updateSettingsImage: (formData) =>
+    request("/settings/", { method: "PATCH", body: formData }),
 
   // ---- admin: catalog files (PDF) ----
   createCatalog: (formData) =>

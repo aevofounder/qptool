@@ -1,6 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from common.images import compress_upload
+
 
 class SingletonModel(models.Model):
     """Base for models that must have exactly one row (site-wide settings)."""
@@ -37,6 +39,9 @@ class SiteSettings(SingletonModel):
     email = models.EmailField("E-mail", blank=True)
     address = models.TextField("Адрес", blank=True)
     work_hours = models.CharField("График работы", max_length=200, blank=True)
+    about_image = models.ImageField(
+        "Фото на странице «О компании»", upload_to="site/", blank=True, null=True
+    )
     map_lat = models.DecimalField(
         "Широта (карта)", max_digits=9, decimal_places=6, null=True, blank=True
     )
@@ -59,6 +64,10 @@ class SiteSettings(SingletonModel):
     def __str__(self):
         return "Настройки сайта"
 
+    def save(self, *args, **kwargs):
+        compress_upload(self.about_image)
+        super().save(*args, **kwargs)
+
 
 class HeroSlide(models.Model):
     """Rotating service slides in the home hero (Металлорежущий инструмент, …)."""
@@ -79,6 +88,10 @@ class HeroSlide(models.Model):
     def __str__(self):
         return f"{self.number} {self.tag}".strip()
 
+    def save(self, *args, **kwargs):
+        compress_upload(self.image)
+        super().save(*args, **kwargs)
+
 
 class ClientLogo(models.Model):
     """Logos in the "Нам доверяют" strip."""
@@ -96,6 +109,10 @@ class ClientLogo(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        compress_upload(self.logo)
+        super().save(*args, **kwargs)
 
 
 class Advantage(models.Model):

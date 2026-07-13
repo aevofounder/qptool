@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.text import slugify
 
+from common.images import compress_upload
+
 
 class Brand(models.Model):
     """Producer of the tools (Sandvik, Walter, Korloy, …)."""
@@ -138,3 +140,7 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return f"Фото {self.product.code}"
+
+    def save(self, *args, **kwargs):
+        compress_upload(self.image)
+        super().save(*args, **kwargs)

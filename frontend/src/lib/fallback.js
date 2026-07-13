@@ -10,6 +10,7 @@ export const FALLBACK_SETTINGS = {
   email: COMPANY.email,
   address: COMPANY.address,
   work_hours: COMPANY.workHours,
+  about_image: "",
   map_embed_url: "",
 };
 

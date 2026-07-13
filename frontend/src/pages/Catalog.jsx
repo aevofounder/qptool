@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { useFetch } from "../lib/hooks.jsx";
-import { useInquiry } from "../lib/inquiry.jsx";
+import { useInquiry, pluralRu } from "../lib/inquiry.jsx";
 import { useSeo } from "../lib/seo.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 import { EmptyState, Skeleton } from "../components/States.jsx";
@@ -25,6 +25,7 @@ export default function Catalog() {
   const [materials, setMaterials] = useState([]); // selected «Обработка» keywords
   const [query, setQuery] = useState("");
   const [debounced, setDebounced] = useState("");
+  const [filtersOpen, setFiltersOpen] = useState(false); // моб. bottom-sheet
 
   useSeo({
     title: "Каталог продукции",
@@ -75,6 +76,20 @@ export default function Catalog() {
   };
 
   const hasActiveFilters = cat !== "all" || brand !== "all" || materials.length > 0 || query.trim() !== "";
+  // Число активных фильтров (для бейджа на кнопке «Фильтры»; поиск не считаем —
+  // он вынесен отдельным полем).
+  const activeCount =
+    (cat !== "all" ? 1 : 0) + (brand !== "all" ? 1 : 0) + materials.length;
+
+  // Блокируем скролл body, пока открыт мобильный лист фильтров.
+  useEffect(() => {
+    if (!filtersOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [filtersOpen]);
 
   return (
     <div>
@@ -116,11 +131,48 @@ export default function Catalog() {
             </button>
           )}
         </form>
+
+        {/* mobile-only toolbar: opens filters as a bottom sheet */}
+        <div className="filters-bar">
+          <button
+            type="button"
+            className="filters-bar__btn"
+            onClick={() => setFiltersOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={filtersOpen}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+            Фильтры
+            {activeCount > 0 && <span className="filters-bar__badge">{activeCount}</span>}
+          </button>
+          <span className="filters-bar__count mono">
+            {hasActiveFilters ? `${matchCount} из ${total}` : `${total}`}
+          </span>
+        </div>
       </div>
 
       <div className="catalog-layout">
+        {/* backdrop for the mobile filters sheet */}
+        <div
+          className={`filters-backdrop${filtersOpen ? " is-open" : ""}`}
+          onClick={() => setFiltersOpen(false)}
+          aria-hidden="true"
+        />
         {/* filters */}
-        <aside className="filters">
+        <aside className={`filters${filtersOpen ? " is-open" : ""}`} aria-label="Фильтры каталога">
+          <div className="filters__sheet-head">
+            <span className="filters__sheet-title">Фильтры</span>
+            <button
+              type="button"
+              className="filters__sheet-close"
+              onClick={() => setFiltersOpen(false)}
+              aria-label="Закрыть фильтры"
+            >
+              ✕
+            </button>
+          </div>
           <div className="filters__h">КАТЕГОРИИ</div>
           <div className="filters__cats">
             {catList.map((c) => (
@@ -184,6 +236,15 @@ export default function Catalog() {
               СБРОСИТЬ ФИЛЬТРЫ
             </button>
           )}
+
+          {/* mobile-only: confirm & close the sheet */}
+          <button
+            type="button"
+            className="btn btn-red filters__apply"
+            onClick={() => setFiltersOpen(false)}
+          >
+            Показать {matchCount} {pluralRu(matchCount, ["товар", "товара", "товаров"])}
+          </button>
         </aside>
 
         {/* grid */}

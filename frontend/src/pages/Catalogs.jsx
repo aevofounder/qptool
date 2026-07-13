@@ -18,6 +18,12 @@ export default function Catalogs() {
 
   const list = catalogs || [];
 
+  // Для встроенного просмотра PDF iframe должен грузиться с того же origin, что
+  // и сайт — иначе X-Frame-Options: SAMEORIGIN заблокирует кадр. Приводим
+  // абсолютный URL бэкенда (http://host:port/media/…) к относительному пути,
+  // который в dev идёт через Vite-прокси, а в prod — с того же домена.
+  const sameOriginSrc = (url) => (url || "").replace(/^https?:\/\/[^/]+/i, "");
+
   return (
     <div>
       <div className="catalog-head">
@@ -62,7 +68,7 @@ export default function Catalogs() {
                     </button>
                     <a
                       className="btn btn-outline"
-                      href={c.file}
+                      href={sameOriginSrc(c.file)}
                       download
                       target="_blank"
                       rel="noopener noreferrer"
@@ -88,7 +94,7 @@ export default function Catalogs() {
             <div className="viewer__bar">
               <span className="viewer__title">{viewing.title}</span>
               <div style={{ display: "flex", gap: 10 }}>
-                <a className="btn btn-outline" href={viewing.file} download target="_blank" rel="noopener noreferrer">
+                <a className="btn btn-outline" href={sameOriginSrc(viewing.file)} download target="_blank" rel="noopener noreferrer">
                   Скачать
                 </a>
                 <button className="btn btn-red" onClick={() => setViewing(null)}>
@@ -96,7 +102,11 @@ export default function Catalogs() {
                 </button>
               </div>
             </div>
-            <iframe className="viewer__frame" src={viewing.file} title={viewing.title} />
+            <iframe
+              className="viewer__frame"
+              src={sameOriginSrc(viewing.file)}
+              title={viewing.title}
+            />
           </>
         )}
       </Modal>

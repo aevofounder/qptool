@@ -38,6 +38,7 @@ class SiteSettingsSerializer(serializers.ModelSerializer):
             "email",
             "address",
             "work_hours",
+            "about_image",
             "map_lat",
             "map_lng",
             "map_embed_url",

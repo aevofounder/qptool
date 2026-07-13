@@ -222,12 +222,16 @@ export default function Home() {
         <div className="trust__h">НАМ ДОВЕРЯЮТ</div>
         <div className="trust__grid">
           {logoList.map((l, i) => (
-            <div className="trust__logo" key={l.id || i}>
+            <div
+              className={`trust__logo${l.logo ? " has-logo" : ""}`}
+              key={l.id || i}
+            >
               {l.logo ? (
                 <img
+                  className="trust__logo-img"
                   src={l.logo}
-                  alt={l.name || "Логотип"}
-                  style={{ maxWidth: "70%", maxHeight: "60%", objectFit: "contain" }}
+                  alt={l.name ? `Логотип: ${l.name}` : "Логотип клиента"}
+                  loading="lazy"
                 />
               ) : (
                 "ЛОГО"

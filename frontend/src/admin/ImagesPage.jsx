@@ -8,7 +8,29 @@ const TABS = [
   { id: "logos", label: "Логотипы клиентов" },
   { id: "products", label: "Фото товаров" },
   { id: "articles", label: "Обложки статей" },
+  { id: "about", label: "О компании" },
 ];
+
+function AboutImage() {
+  const [reload, setReload] = useState(0);
+  const { data: settings } = useFetch(api.settings, [reload], null);
+  return (
+    <div className="iu-list">
+      <ImageUploader
+        title="Фото на странице «О компании»"
+        subtitle="Вертикальное фото производства/склада/команды (≈3:4)"
+        currentUrl={settings?.about_image}
+        openHref="/about"
+        onSave={async (file) => {
+          const fd = new FormData();
+          fd.append("about_image", file);
+          await api.updateSettingsImage(fd);
+          setReload((x) => x + 1);
+        }}
+      />
+    </div>
+  );
+}
 
 function HeroImages() {
   const [reload, setReload] = useState(0);
@@ -139,6 +161,7 @@ export default function ImagesPage() {
       {tab === "logos" && <LogoImages />}
       {tab === "products" && <ProductImages />}
       {tab === "articles" && <ArticleImages />}
+      {tab === "about" && <AboutImage />}
     </div>
   );
 }

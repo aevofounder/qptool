@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.text import slugify
 
+from common.images import compress_upload
+
 
 class ArticleCategory(models.Model):
     """Rubric for the "Полезные материалы" block (Технологии, Оснастка, …)."""
@@ -52,4 +54,5 @@ class Article(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title, allow_unicode=True)
+        compress_upload(self.cover)
         super().save(*args, **kwargs)
