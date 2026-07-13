@@ -3382,3 +3382,157 @@ video {
     font-size: 10px;
   }
 }
+
+/* ========================================================================
+   ARTICLES — карточка-ссылка, «Все статьи», страница материала
+   ===================================================================== */
+/* Текстовые ссылки, реализованные кнопкой («Все статьи →»): сбрасываем
+   нативные стили кнопки, сохраняя внешний вид ссылки. */
+.link-red--btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: inherit;
+  line-height: inherit;
+}
+.link-red:hover {
+  text-decoration: underline;
+}
+/* Анонс в карточке статьи на странице «Материалы». */
+.article__excerpt {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Детальная страница статьи. */
+.article-page {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 8px var(--pad-x) 64px;
+}
+.article-page__head {
+  margin-bottom: 28px;
+}
+.article-page__meta {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.article-page__title {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 5.2vw, 44px);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.article-page__lead {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-2);
+  margin: 18px 0 0;
+}
+.article-page__cover {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 36px;
+}
+.article-page__body {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--text);
+}
+.article-page__body p {
+  margin: 0 0 20px;
+}
+.article-page__empty {
+  color: var(--text-2);
+}
+.article-page__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+
+/* ========================================================================
+   SOLUTION — «что входит в решение» + поставляемый инструмент
+   ===================================================================== */
+.included-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 40px;
+}
+.included-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--text);
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.included-item__check {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.supplied__lead {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-2);
+  max-width: 640px;
+  margin: 0 0 22px;
+}
+.supplied__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.supplied__tag {
+  font-family: var(--display-2);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 10px 18px;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+@media (max-width: 680px) {
+  .included-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

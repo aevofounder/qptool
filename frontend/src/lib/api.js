@@ -55,7 +55,15 @@ export const api = {
     return request(`/products/${s ? `?${s}` : ""}`);
   },
   product: (slug) => request(`/products/${encodeURIComponent(slug)}/`),
-  articles: () => request("/articles/").then(results),
+  articles: (params = {}) => {
+    const qs = new URLSearchParams();
+    Object.entries(params).forEach(([k, v]) => {
+      if (v != null && v !== "") qs.append(k, v);
+    });
+    const s = qs.toString();
+    return request(`/articles/${s ? `?${s}` : ""}`).then(results);
+  },
+  article: (slug) => request(`/articles/${encodeURIComponent(slug)}/`),
   heroSlides: () => request("/hero-slides/").then(results),
   advantages: () => request("/advantages/").then(results),
   clientLogos: () => request("/client-logos/").then(results),
