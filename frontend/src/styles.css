@@ -3468,6 +3468,85 @@ video {
 .article-page__empty {
   color: var(--text-2);
 }
+/* Оформление Markdown-содержимого статьи (заголовки, списки, таблицы …). */
+.article-page__body h2 {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  margin: 40px 0 16px;
+}
+.article-page__body h3 {
+  font-family: var(--display-2);
+  font-weight: 700;
+  font-size: 20px;
+  margin: 32px 0 12px;
+}
+.article-page__body h2:first-child,
+.article-page__body h3:first-child {
+  margin-top: 0;
+}
+.article-page__body ul,
+.article-page__body ol {
+  margin: 0 0 20px;
+  padding-left: 22px;
+}
+.article-page__body li {
+  margin-bottom: 8px;
+}
+.article-page__body li::marker {
+  color: var(--red);
+}
+.article-page__body strong {
+  font-weight: 700;
+}
+.article-page__body a {
+  color: var(--red);
+  text-decoration: underline;
+}
+.article-page__body blockquote {
+  margin: 24px 0;
+  padding: 4px 0 4px 20px;
+  border-left: 3px solid var(--red);
+  color: var(--text-2);
+  font-style: italic;
+}
+.article-page__body code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  background: var(--panel);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.article-page__body hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 32px 0;
+}
+/* GFM-таблица: горизонтальный скролл на узких экранах вместо перелома вёрстки. */
+.article-page__body .md-table {
+  overflow-x: auto;
+  margin: 24px 0;
+}
+.article-page__body table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+.article-page__body th,
+.article-page__body td {
+  border: 1px solid var(--line);
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+.article-page__body thead th {
+  background: var(--panel);
+  font-weight: 700;
+}
 .article-page__cta {
   display: flex;
   flex-wrap: wrap;

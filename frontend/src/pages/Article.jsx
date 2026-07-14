@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
+import { marked } from "marked";
 import { api } from "../lib/api.js";
 import { useFetch } from "../lib/hooks.jsx";
 import { useSeo } from "../lib/seo.jsx";
@@ -16,12 +17,22 @@ function formatMeta(a) {
   return [date, rubric].filter(Boolean).join(" · ");
 }
 
-// Plain-text body → paragraphs. Blank lines separate paragraphs.
-function paragraphs(body) {
-  return String(body || "")
-    .split(/\n{2,}/)
-    .map((p) => p.trim())
-    .filter(Boolean);
+marked.setOptions({ gfm: true, breaks: false });
+
+// Рендер тела статьи из Markdown. Текст пишет сотрудник через админку
+// (доверенный источник), поэтому HTML из marked отдаём как есть.
+// Ведущий заголовок H1 убираем — он дублировал бы заголовок статьи (отд. поле).
+// Таблицы оборачиваем в скролл-контейнер, чтобы не ломали вёрстку на телефоне.
+function renderBody(body) {
+  let src = String(body || "");
+  if (src.charCodeAt(0) === 0xfeff) src = src.slice(1); // отбрасываем BOM, если есть
+  src = src.trim();
+  if (!src) return "";
+  const withoutTitle = src.replace(/^#\s+.*(?:\r?\n)+/, "");
+  const html = marked.parse(withoutTitle);
+  return html
+    .replace(/<table>/g, '<div class="md-table"><table>')
+    .replace(/<\/table>/g, "</table></div>");
 }
 
 export default function Article() {
@@ -80,7 +91,7 @@ export default function Article() {
       />
     );
 
-  const parts = paragraphs(article.body);
+  const bodyHtml = renderBody(article.body);
   const related = (allArticles || [])
     .filter((a) => a.slug && a.slug !== slug)
     .slice(0, 3);
@@ -116,16 +127,19 @@ export default function Article() {
           )}
         </div>
 
-        <div className="article-page__body">
-          {parts.length > 0 ? (
-            parts.map((p, i) => <p key={i}>{p}</p>)
-          ) : (
+        {bodyHtml ? (
+          <div
+            className="article-page__body md"
+            dangerouslySetInnerHTML={{ __html: bodyHtml }}
+          />
+        ) : (
+          <div className="article-page__body">
             <p className="article-page__empty">
               Полный текст материала скоро появится. По вопросам подбора инструмента
               свяжитесь с нашими специалистами.
             </p>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className="article-page__cta">
           <button className="btn btn-red" onClick={() => navigate("/contacts")}>
