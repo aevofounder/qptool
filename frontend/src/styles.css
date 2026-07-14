@@ -1065,6 +1065,11 @@ img {
   max-width: var(--maxw);
   margin: 0 auto;
 }
+/* CTA-плашка (напр. на «Решениях»): симметричные вертикальные отступы, чтобы
+   она не прилипала к блоку сверху, а стояла по центру промежутка до подвала. */
+.related--cta {
+  padding-top: 72px;
+}
 .related__inner {
   border-top: 1px solid var(--line);
   padding-top: 40px;

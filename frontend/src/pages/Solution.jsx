@@ -173,7 +173,7 @@ export default function Solution() {
       )}
 
       {/* CTA */}
-      <section className="related">
+      <section className="related related--cta">
         <div className="cta-dark">
           <h2 className="cta-dark__title">Готовы рассчитать оснащение вашего цеха?</h2>
           <button className="btn btn-white" onClick={() => navigate("/contacts")}>
