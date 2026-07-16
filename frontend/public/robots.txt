@@ -14,5 +14,5 @@ Allow: /
 User-agent: Googlebot
 Allow: /
 
-Sitemap: https://qptool.ru/sitemap.xml
+Sitemap: https://qptool.ru/api/sitemap.xml
 Host: qptool.ru

@@ -1,0 +1,17 @@
+[Unit]
+Description=QP Tool — Gunicorn (Django API)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/qptool/backend
+# Django читает переменные окружения из backend/.env (python-dotenv).
+ExecStart=/var/www/qptool/backend/.venv/bin/gunicorn config.wsgi:application \
+    --bind 127.0.0.1:8001 --workers 3 --timeout 60
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

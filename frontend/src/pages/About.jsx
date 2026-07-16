@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useSeo } from "../lib/seo.jsx";
+import { useSettings } from "../lib/hooks.jsx";
 import Breadcrumb from "../components/Breadcrumb.jsx";
 
 const NUMBERS = [
@@ -18,6 +19,7 @@ const PRINCIPLES = [
 
 export default function About() {
   const navigate = useNavigate();
+  const settings = useSettings();
   useSeo({
     title: "О компании",
     description:
@@ -48,12 +50,23 @@ export default function About() {
             </p>
           </div>
           <div className="ph-box hatch" style={{ aspectRatio: "3 / 4" }}>
-            <div className="ph-label">ФОТО · ПРОИЗВОДСТВО</div>
-            <div className="ph-center">
-              <div className="gallery__plus" style={{ width: 50, height: 50 }}>
-                +
-              </div>
-            </div>
+            {settings.about_image ? (
+              <img
+                src={settings.about_image}
+                alt="Производство и склад металлорежущего инструмента QP Tool в Екатеринбурге"
+                loading="lazy"
+                style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }}
+              />
+            ) : (
+              <>
+                <div className="ph-label">ФОТО · ПРОИЗВОДСТВО</div>
+                <div className="ph-center">
+                  <div className="gallery__plus" style={{ width: 50, height: 50 }}>
+                    +
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>

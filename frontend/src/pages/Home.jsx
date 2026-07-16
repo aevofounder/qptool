@@ -222,12 +222,16 @@ export default function Home() {
         <div className="trust__h">НАМ ДОВЕРЯЮТ</div>
         <div className="trust__grid">
           {logoList.map((l, i) => (
-            <div className="trust__logo" key={l.id || i}>
+            <div
+              className={`trust__logo${l.logo ? " has-logo" : ""}`}
+              key={l.id || i}
+            >
               {l.logo ? (
                 <img
+                  className="trust__logo-img"
                   src={l.logo}
-                  alt={l.name || "Логотип"}
-                  style={{ maxWidth: "70%", maxHeight: "60%", objectFit: "contain" }}
+                  alt={l.name ? `Логотип: ${l.name}` : "Логотип клиента"}
+                  loading="lazy"
                 />
               ) : (
                 "ЛОГО"
@@ -244,11 +248,23 @@ export default function Home() {
             <h2 className="h2" style={{ fontSize: 30 }}>
               Полезные материалы
             </h2>
-            <span className="link-red">Все статьи →</span>
+            <button type="button" className="link-red link-red--btn" onClick={() => navigate("/articles")}>
+              Все статьи →
+            </button>
           </div>
           <div className="articles">
-            {articleList.map((a, i) => (
-              <div className="article" key={a.id || i}>
+            {articleList.map((a, i) => {
+              const to = a.slug ? `/articles/${a.slug}` : "/articles";
+              return (
+              <div
+                className="article"
+                key={a.id || i}
+                role="link"
+                tabIndex={0}
+                aria-label={a.title}
+                onClick={() => navigate(to)}
+                onKeyDown={activateOnKey(() => navigate(to))}
+              >
                 <div className="article__cover hatch">
                   {a.cover ? (
                     <img
@@ -265,7 +281,8 @@ export default function Home() {
                   <h4 className="article__title">{a.title}</h4>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

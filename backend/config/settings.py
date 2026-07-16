@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sitemaps",
     # Third party
     "rest_framework",
     "rest_framework.authtoken",
@@ -220,7 +221,12 @@ CORS_ALLOW_ALL_ORIGINS = env_bool("DJANGO_CORS_ALLOW_ALL", default=DEBUG)
 # --------------------------------------------------------------------------- #
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
-X_FRAME_OPTIONS = "DENY"
+# SAMEORIGIN (а не DENY): защищает от кликджекинга с чужих сайтов, но позволяет
+# нашему сайту показывать свои же файлы (PDF-каталоги) во встроенном iframe.
+X_FRAME_OPTIONS = "SAMEORIGIN"
+# W019 предупреждает, что X_FRAME_OPTIONS не DENY — это осознанное решение
+# (просмотр PDF-каталогов в iframe), поэтому проверку глушим.
+SILENCED_SYSTEM_CHECKS = ["security.W019"]
 
 if not DEBUG:
     # Не даём случайно уехать в прод с дефолтным небезопасным ключом.

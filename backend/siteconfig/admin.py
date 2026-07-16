@@ -12,7 +12,7 @@ admin.site.index_title = getattr(settings, "ADMIN_INDEX_TITLE", admin.site.index
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(admin.ModelAdmin):
     fieldsets = (
-        ("Компания", {"fields": ("company_name", "tagline")}),
+        ("Компания", {"fields": ("company_name", "tagline", "about_image")}),
         ("Контакты", {"fields": ("phone_primary", "phone_secondary", "email")}),
         ("Адрес", {"fields": ("address", "work_hours", "map_lat", "map_lng")}),
         ("Карта (Яндекс)", {"fields": ("map_embed_url",)}),
